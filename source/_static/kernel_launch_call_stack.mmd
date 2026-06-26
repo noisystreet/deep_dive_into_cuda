@@ -1,0 +1,47 @@
+flowchart TD
+    subgraph compile["编译期 (main 之前)"]
+        REG["__sti____cudaRegisterAll()<br/>__attribute__((constructor))"]
+        RF["__cudaRegisterBinary()"]
+        RE["__cudaRegisterEntry(<br/>vector_add, _Z10vector_addPKfS0_Pfi)"]
+        REG --> RF --> RE
+    end
+
+    subgraph host["Host 侧 (main)"]
+        PUSH["__cudaPushCallConfiguration(<br/>grid=4096×1×1, block=256×1×1)"]
+        WRAP["vector_add(d_a, d_b, d_c, n)"]
+        SYNC["cudaDeviceSynchronize()"]
+        PUSH --> WRAP --> SYNC
+    end
+
+    subgraph stub["Device Stub (cudafe++ 生成)"]
+        STUB["__device_stub__Z10vector_addPKfS0_Pfi(...)"]
+        GK["__cudaGetKernel → CUkernel handle"]
+        POP["__cudaPopCallConfiguration()"]
+        HELP["__cudaLaunchKernel_helper()"]
+        STUB --> GK
+        STUB --> POP --> HELP
+    end
+
+    subgraph runtime["Runtime API (libcudart 静态嵌入)"]
+        CLK["__cudaLaunchKernel()"]
+        CLK2["cudaLaunchKernel()"]
+        HELP --> CLK --> CLK2
+    end
+
+    subgraph driver["Driver API (libcuda.so)"]
+        CU["cuLaunchKernel_ptsz()"]
+        CLK2 --> CU
+    end
+
+    subgraph kernel["内核驱动"]
+        IOCTL["ioctl(/dev/nvidia0,<br/>NV_ESC 0x4e, 56 B)"]
+        GPU["GPU 命令队列 → Warp Scheduler"]
+        CU --> IOCTL --> GPU
+    end
+
+    compile --> host
+    WRAP --> STUB
+
+    style REG fill:#e1f5fe
+    style IOCTL fill:#fff3e0
+    style GPU fill:#c8e6c9

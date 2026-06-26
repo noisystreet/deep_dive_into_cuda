@@ -1,0 +1,7 @@
+flowchart LR
+    INPUT["vector_add.cpp4.ii<br/>(1.2 MB, 预处理后的 C++ 代码)"] --> CUDAFE["cudafe++"]
+    CUDAFE --> A[".cudafe1.cpp<br/>1.1 MB<br/>Host C++"]
+    CUDAFE --> B[".cudafe1.stub.c<br/>1.7 KB<br/>运行时代码 + 注册代码"]
+    CUDAFE --> C[".cudafe1.gpu<br/>15 KB<br/>device 代码 (给 cicc 用)"]
+    CUDAFE --> D[".module_id<br/>35 B"]
+    style CUDAFE fill:#bbdefb

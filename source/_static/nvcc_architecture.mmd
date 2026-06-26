@@ -1,0 +1,15 @@
+flowchart TB
+    subgraph NVCC["nvcc (Driver Compiler)"]
+        direction TB
+        OP["Option Parser"] --> PM["Phase Manager"] --> FR["File Router"] --> SD["Sub-tool Dispatcher<br/>system(/bin/sh -c)"]
+        AT["Architecture Table"] --> PM
+        IO["Input/Output File Name Generator"] --> PM
+    end
+    SD --> GCC1["gcc (host preprocess)"]
+    SD --> CUDAFE["cudafe++ (CUDA frontend)"]
+    SD --> CICC["cicc (CUDA → PTX)"]
+    SD --> PTXAS["ptxas (PTX → SASS)"]
+    SD --> FB["fatbinary (pack)"]
+    SD --> NVL["nvlink (link)"]
+    style NVCC fill:#e3f2fd
+    style SD fill:#fff9c4

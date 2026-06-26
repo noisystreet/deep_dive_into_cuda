@@ -1,0 +1,20 @@
+flowchart TB
+    subgraph HostPath["Host 路径"]
+        H1["gcc -E<br/>host 预处理"] --> H2["cudafe++<br/>CUDA 语法解析"] --> H3["gcc -c<br/>host 编译"] --> H4["g++<br/>最终链接"]
+    end
+    subgraph DevicePath["Device 路径"]
+        D1["gcc -E<br/>device 预处理"] --> D2["cicc<br/>CUDA C++ → PTX"] --> D3["ptxas<br/>PTX → SASS"] --> D4["fatbinary<br/>打包嵌入"]
+    end
+    subgraph LinkPath["链接路径"]
+        L1["nvlink<br/>device 链接"] --> L2["fatbinary+gcc<br/>二次打包"]
+    end
+    H2 --> D1
+    D4 --> H3
+    H3 --> L1
+    D4 --> L1
+    L2 --> H4
+    style H2 fill:#bbdefb
+    style D2 fill:#c8e6c9
+    style D3 fill:#c8e6c9
+    style L1 fill:#fff9c4
+    style H4 fill:#ffccbc

@@ -1,0 +1,11 @@
+flowchart TB
+    subgraph CICC["cicc 可执行文件 (77 MB)"]
+        direction TB
+        L1["上层: cicc 包装器<br/>- 命令行解析<br/>- libnvvm API 调用<br/>- PTX 输出"] -->|dlopen/dynamic link| L2
+        L2["中层: libnvvm.so (61 MB)<br/>- LLVM 7.0.1 主框架<br/>- NVVM 定制 Pass Pipeline<br/>- NVPTX 后端"] --> L3
+        L3["底层: libdevice.10.bc (454 KB)<br/>- 内置数学函数 LLVM IR bitcode<br/>- __nv_* 内置函数实现"]
+    end
+    style CICC fill:#e3f2fd
+    style L1 fill:#bbdefb
+    style L2 fill:#c8e6c9
+    style L3 fill:#fff9c4

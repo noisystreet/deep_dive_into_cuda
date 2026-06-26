@@ -1,0 +1,19 @@
+sequenceDiagram
+    participant User as 用户程序
+    participant Lib as libcudart
+    participant Driver as libcuda (Driver)
+    participant Kernel as nvidia.ko
+    participant GPU as GPU 硬件
+
+    User->>Lib: cudaLaunch<<<grid, block>>>(args)
+    Lib->>Lib: 解析 args
+    Lib->>Driver: cuLaunchKernel()
+    Driver->>Driver: 构建 GPU 命令缓冲区
+    Driver->>Kernel: ioctl(0x4e, cmd_buf)
+    Kernel->>Kernel: 解析命令缓冲区
+    Kernel->>Kernel: 推送到 GPU 命令队列
+    Kernel->>Kernel: 触发 GPU 调度器
+    Kernel->>GPU: GPU 命令
+    GPU->>GPU: Warp Scheduler 分配线程块
+    GPU->>GPU: SM 执行 SASS 指令
+    GPU->>GPU: 内存访问 L1/L2 cache

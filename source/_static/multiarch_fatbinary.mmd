@@ -1,0 +1,35 @@
+flowchart TB
+    subgraph compile["编译期 (-gencode × N)"]
+        G75["-gencode arch=compute_75,code=sm_75<br/>→ compute_75.cubin (3.2 KB)"]
+        G89["-gencode arch=compute_89,code=sm_89<br/>→ compute_89.cubin (3.5 KB)"]
+        PTX["-gencode arch=compute_89,code=compute_89<br/>→ compute_89.ptx (1.3 KB)"]
+        FB["fatbinary --create<br/>合并为 vector_add.fatbin"]
+        G75 --> FB
+        G89 --> FB
+        PTX --> FB
+    end
+
+    subgraph container["Fat Binary 容器 (7368 B)"]
+        I1["Image: ELF sm_75"]
+        I2["Image: PTX sm_89"]
+        I3["Image: ELF sm_89"]
+    end
+
+    subgraph runtime["运行时 (CUDA Driver)"]
+        Q{"GPU 计算能力?"}
+        S75["选择 sm_75 cubin<br/>直接执行 SASS"]
+        S89["选择 sm_89 cubin<br/>直接执行 SASS"]
+        JIT["PTX → JIT → SASS<br/>（无匹配 cubin 时）"]
+    end
+
+    FB --> container
+    Q -->|"7.5 (Turing)"| S75
+    Q -->|"8.9 (Ada)"| S89
+    Q -->|"无精确 cubin"| JIT
+    I1 -.-> S75
+    I3 -.-> S89
+    I2 -.-> JIT
+
+    style S89 fill:#c8e6c9
+    style JIT fill:#fff3e0
+    style container fill:#f3e5f5

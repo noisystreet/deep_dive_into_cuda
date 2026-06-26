@@ -1,0 +1,46 @@
+flowchart TB
+    subgraph EXE["可执行文件 vector_add"]
+        SEG[".nvFatBinSegment<br/>Wrapper {magic, ptr}"]
+        FAT[".nv_fatbin 段<br/>4 KB"]
+    end
+
+    subgraph CONTAINER["Fat Binary 容器"]
+        HDR["容器头部<br/>magic + image 目录"]
+        IMG1["Image 1: PTX<br/>sm_89, 1.3 KB"]
+        IMG2["Image 2: ELF cubin<br/>sm_89, 3.5 KB"]
+    end
+
+    subgraph CUBIN["ELF Cubin"]
+        ELF_HDR["ELF Header<br/>ET_EXEC, ABI=0x41"]
+        TEXT_S[".text._Z10...<br/>SASS 512 B"]
+        CONST[".nv.constant0<br/>参数布局"]
+        INFO[".nv.info<br/>kernel 元数据"]
+        DEBUG[".debug_frame"]
+        SYMTAB[".symtab"]
+    end
+
+    subgraph SASS["SASS 指令"]
+        I1["S2R R0, SR_CTAID.X<br/>blockIdx.x"]
+        I2["IMAD R6, R0, c[..], R5<br/>idx = block*blockDim+tid"]
+        I3["ISETP.GE.AND P0, ...<br/>idx >= n ?"]
+        I4["LDG.E R4, [R4.64]<br/>加载 b[idx]"]
+        I5["FADD R9, R4, R3<br/>a[idx] + b[idx]"]
+        I6["STG.E [R6.64], R9<br/>写回 c[idx]"]
+        I7["EXIT"]
+    end
+
+    SEG --> FAT
+    FAT --> HDR
+    HDR --> IMG1
+    HDR --> IMG2
+    IMG2 --> ELF_HDR
+    ELF_HDR --> TEXT_S
+    ELF_HDR --> CONST
+    ELF_HDR --> INFO
+    TEXT_S --> I1
+    I1 --> I2 --> I3 --> I4 --> I5 --> I6 --> I7
+
+    style FAT fill:#f3e5f5
+    style IMG2 fill:#e8eaf6
+    style TEXT_S fill:#ffccbc
+    style SEG fill:#fff9c4

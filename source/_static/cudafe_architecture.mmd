@@ -1,0 +1,16 @@
+flowchart TB
+    subgraph CUDAFE_WRAPPER["cudafe++ 包装器 (NVIDIA 专有层, ~5 MB)"]
+        direction TB
+        SUB1["CUDA 语义分析器<br/>- __global__/__device__/__host__ 空间检查<br/>- <<<>>> kernel 调用展开<br/>- __shared__/__constant__ 处理<br/>- __launch_bounds__ 校验<br/>- execution space 继承规则<br/>- kernel 参数合法性检查"]
+        SUB2["代码生成器<br/>- host C++ 翻译 (.cudafe1.cpp)<br/>- stub 生成 (.cudafe1.stub.c)<br/>- device 代码提取 (.cudafe1.gpu)<br/>- 模块 ID 生成<br/>- #line 指令保留"]
+        SUB3["诊断系统<br/>- 错误/警告/备注 分类<br/>- 错误码编号显示"]
+    end
+    subgraph EDG["EDG C++ Front End 6.7 (~10 MB, 商业授权)"]
+        direction TB
+        EDG_L["词法分析器 (Lexer)<br/>- 预处理指令处理<br/>- Token 流生成<br/>- 字符串/数字字面量解析"]
+        EDG_P["语法解析器 (Parser)<br/>- declaration parsing<br/>- statement parsing<br/>- template parsing & instantiation<br/>- SFINAE / Concepts"]
+        EDG_S["语义分析器<br/>- 类型系统<br/>- 重载决议<br/>- 名称查找<br/>- 模板参数推导<br/>- constexpr 求值"]
+    end
+    CUDAFE_WRAPPER --> EDG
+    style CUDAFE_WRAPPER fill:#e3f2fd
+    style EDG fill:#f3e5f5

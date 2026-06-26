@@ -1,0 +1,13 @@
+flowchart TB
+    INPUT["输入文件 (.o / .a / .ptx / .cubin)"] --> S1["Step 1: 输入解析<br/>- 识别文件类型 (ELF/PTX/ar)<br/>- 解析 ELF section 表<br/>- 提取 device 代码段"]
+    S1 --> S2["Step 2: 符号解析<br/>- 遍历 .symtab<br/>- 建立全局符号表<br/>- 解析强弱符号<br/>- 处理 common 符号<br/>- 检测多重定义"]
+    S2 --> S3["Step 3: 死代码消除 (可选)<br/>- --kernels-used / --variables-used 过滤<br/>- --use-host-info 过滤<br/>- 调用图可达性分析"]
+    S2 --> S4["Step 4: LTO (可选)<br/>- dlopen libnvvm.so<br/>- 链接 NVVM IR<br/>- 跨模块内联/优化<br/>- 调用 cicc + ptxas"]
+    S3 --> S5["Step 5: 段合并<br/>- 合并 .text SASS 代码<br/>- 合并 .nv.constant / .nv.info<br/>- 合并 .debug_*"]
+    S4 --> S5
+    S5 --> S6["Step 6: 重定位<br/>- R_CUDA_* 重定位类型处理<br/>- PCREL / ABS 地址修正<br/>- 常量 bank 重定位"]
+    S6 --> S7["Step 7: 最终输出<br/>- 生成单个 ELF cubin<br/>- 生成 register stub<br/>- 调用 fatbinary 打包"]
+    style S1 fill:#e3f2fd
+    style S2 fill:#fff9c4
+    style S4 fill:#c8e6c9
+    style S7 fill:#ffccbc

@@ -1,0 +1,42 @@
+sequenceDiagram
+    participant User as 用户程序
+    participant CUDART as libcudart<br/>1.4 MB
+    participant CUDA as libcuda.so<br/>87 MB
+    participant KERNEL as nvidia.ko<br/>~101 MB
+    participant GPU as GPU 硬件
+
+    User->>CUDART: cudaMalloc(4MB)
+    CUDART->>CUDA: cuMemAlloc_v2()
+    CUDA->>KERNEL: open("/dev/nvidia0")
+    CUDA->>KERNEL: ioctl(0x2a, ...)
+    KERNEL-->>CUDA: GPU 显存地址
+    CUDA-->>CUDART: CUDA_SUCCESS
+    CUDART-->>User: d_a
+
+    User->>CUDART: cudaMemcpy(H2D, 4MB)
+    CUDART->>CUDA: cuMemcpyHtoD_v2()
+    CUDA->>KERNEL: ioctl(0x4e, DMA desc)
+    KERNEL-->>GPU: PCIe DMA 传输
+    GPU-->>KERNEL: DMA 完成
+    KERNEL-->>CUDA: 完成
+    CUDA-->>CUDART: CUDA_SUCCESS
+    CUDART-->>User: OK
+
+    User->>CUDART: cudaLaunchKernel()
+    CUDART->>CUDA: cuLaunchKernel()
+    CUDA->>KERNEL: 构建 command buffer
+    CUDA->>KERNEL: ioctl(0x4e, cmd)
+    KERNEL-->>GPU: 推送到命令队列
+    GPU->>GPU: Warp Scheduler
+    GPU->>GPU: SASS 执行
+    Note over GPU: LDG.E / FADD / STG.E / EXIT
+
+    User->>CUDART: cudaDeviceSynchronize()
+    CUDART->>CUDA: cuCtxSynchronize_v2()
+    CUDA->>KERNEL: ioctl(0x2b, fence)
+    KERNEL-->>GPU: 查询 fence 寄存器
+    GPU-->>KERNEL: 完成
+    KERNEL->>KERNEL: eventfd → futex
+    KERNEL-->>CUDA: GPU 完成
+    CUDA-->>CUDART: CUDA_SUCCESS
+    CUDART-->>User: 同步完成

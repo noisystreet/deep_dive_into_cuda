@@ -1,0 +1,24 @@
+flowchart TB
+    SRC["src/vector_add.cu (489 B)"] --> PRE["gcc -E (预处理)"]
+    PRE --> HOSTPATH["Host 路径: .cpp4.ii (1.2 MB)"]
+    PRE --> DEVPATH["Device 路径: .cpp1.ii (1.3 MB)"]
+    HOSTPATH --> CUDAFE["cudafe++ (CUDA 语法解析 & 分离)"]
+    CUDAFE --> HOSTCPP[".cudafe1.cpp ← host C++"]
+    CUDAFE --> DEVGPU[".cudafe1.gpu ← device 代码"]
+    CUDAFE --> HOSTSTUB[".cudafe1.stub → host stub"]
+    HOSTCPP --> GCC["gcc -c (编译 host .o)"]
+    DEVGPU --> CICC["cicc (CUDA → PTX)"]
+    CICC --> PTX["vector_add.ptx (PTX, 1.3 KB)"]
+    PTX --> PTXAS["ptxas (PTX → SASS)"]
+    PTXAS --> CUBIN[".sm_89.cubin (SASS, 3.5 KB)"]
+    CUBIN --> FB["fatbinary (打包嵌入)"]
+    FB --> FATBIN[".fatbin.c (C 数组, 11 KB)"]
+    GCOBJ["gcc -c (.o)"] --> LINK["nvlink (device 链接) + g++ (最终链接)"]
+    GCC --> GCOBJ
+    FATBIN --> GCOBJ
+    FATBIN --> LINK
+    LINK --> EXE["vector_add (可执行文件)"]
+    style CUDAFE fill:#bbdefb
+    style CICC fill:#c8e6c9
+    style PTXAS fill:#c8e6c9
+    style LINK fill:#fff9c4

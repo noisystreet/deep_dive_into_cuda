@@ -1,0 +1,35 @@
+/* Custom CSS for Deep Dive Into CUDA */
+
+.highlight {
+    background: #f8f8f8;
+    border-radius: 3px;
+}
+
+div[class*="highlight"] pre {
+    font-size: 13px;
+    line-height: 1.4;
+}
+
+.docutils table {
+    border-collapse: collapse;
+    margin: 1em 0;
+}
+
+.docutils th, .docutils td {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+}
+
+.docutils th {
+    background: #f0f0f0;
+    font-weight: 600;
+}
+
+.wy-nav-content {
+    max-width: 960px;
+}
+
+.rst-content .section ul li,
+.rst-content .section ol li {
+    margin-bottom: 4px;
+}

@@ -1,0 +1,27 @@
+flowchart LR
+    subgraph Host["Host 路径"]
+        direction TB
+        H1["① gcc -E<br/>host 预处理"] --> H2["③ cudafe++<br/>CUDA 语法解析"] --> H3["⑧ gcc -c<br/>编译 host .o"] --> H4["⑪ g++<br/>最终链接"]
+    end
+
+    subgraph Device["Device 路径"]
+        direction TB
+        D1["② gcc -E<br/>device 预处理"] --> D2["⑤ cicc<br/>CUDA C++ → PTX"] --> D3["⑥ ptxas<br/>PTX → SASS"] --> D4["⑦ fatbinary<br/>打包嵌入"]
+    end
+
+    subgraph Link["链接路径"]
+        direction TB
+        L1["⑨ nvlink<br/>device 链接"] --> L2["⑩ fatbinary + gcc<br/>二次打包 + link stub"]
+    end
+
+    H2 --> D1
+    D4 --> H3
+    H3 --> L1
+    D4 --> L1
+    L2 --> H4
+
+    style H2 fill:#bbdefb
+    style D2 fill:#c8e6c9
+    style D3 fill:#c8e6c9
+    style L1 fill:#fff9c4
+    style H4 fill:#ffccbc

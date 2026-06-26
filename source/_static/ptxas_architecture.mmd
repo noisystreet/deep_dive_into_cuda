@@ -1,0 +1,9 @@
+flowchart TB
+    INPUT["PTX 输入 (文本)"] --> PARSER["PTX Parser<br/>- PTX 文本解析<br/>- PTX ISA 版本检查<br/>- .target 架构兼容性"]
+    PARSER --> OPT["Backend Optimizer (单线程)<br/>- If-conversion: 控制流→谓词<br/>- Loop unrolling: 18种原因分析<br/>- Constant propagation<br/>- Dead code elimination<br/>- Global register allocation<br/>- Pre-scheduling (延迟隐藏)<br/>- Spill optimization<br/>- Late commoning"]
+    OPT --> FIN["Finalizer (多线程, --split-compile)<br/>- Post-scheduling<br/>- Post-expansion<br/>- Sync instruction expansion<br/>- SASS binary emission"]
+    FIN --> ELF["ELF Writer<br/>- .text (SASS 机器码)<br/>- .nv.info (kernel 元数据)<br/>- .nv.constant (常量 bank)<br/>- .debug_frame<br/>- .symtab"]
+    ELF --> OUTPUT["SASS 输出 (ELF cubin)"]
+    style OPT fill:#fff9c4
+    style FIN fill:#c8e6c9
+    style ELF fill:#f3e5f5

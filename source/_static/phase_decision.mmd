@@ -1,0 +1,14 @@
+flowchart TB
+    USER["nvcc --verbose -o vector_add vector_add.cu"] --> OP["Option Parser<br/>--verbose, -o, input file"]
+    OP --> FR["File Type Router<br/>vector_add.cu → CUDA source"]
+    FR --> PM["Phase Manager: 确定编译阶段序列"]
+    PM --> P1["1. 预处理"]
+    P1 --> P2["2. CudaFEpp (cudafe++)"]
+    P2 --> P3["3. CiCC (cicc → PTX)"]
+    P3 --> P4["4. PtxStep (ptxas)"]
+    P4 --> P5["5. FatBinary (打包)"]
+    P5 --> P6["6. Compile (host .o)"]
+    P6 --> P7["7. DevLink (nvlink)"]
+    P7 --> P8["8. FatBinary (重新打包)"]
+    P8 --> P9["9. Host Link (g++)"]
+    style PM fill:#fff9c4
