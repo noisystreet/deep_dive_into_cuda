@@ -9,3 +9,5 @@ nvcc 工具链分析
    03_cicc
    04_ptxas
    05_nvlink
+   06_libdevice
+   07_host_link

@@ -1,0 +1,28 @@
+flowchart LR
+    subgraph Compile["nvcc -c (CMake 第一步)"]
+        FB["fatbinary → vector_add.fatbin.c"]
+        O["vector_add.cu.o"]
+        S1[".nv_fatbin 4064 B"]
+        S2[".nvFatBinSegment 24 B"]
+        S3["__sti____cudaRegisterAll"]
+    end
+
+    subgraph Link["g++ 最终链接"]
+        G["g++ @objects1.rsp @linkLibs.rsp"]
+        LIB["-lcudadevrt -lcudart_static -lrt -lpthread -ldl"]
+        ELF["vector_add 可执行文件"]
+    end
+
+    subgraph Runtime["进程启动"]
+        INIT[".init_array → __cudaRegisterFatBinary"]
+        DRV["Driver 解析 .nv_fatbin → 加载 cubin/PTX"]
+    end
+
+    FB --> O
+    O --> S1
+    O --> S2
+    O --> S3
+    O --> G
+    LIB --> G
+    G --> ELF
+    ELF --> INIT --> DRV

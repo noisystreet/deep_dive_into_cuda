@@ -7,3 +7,4 @@
    01_driver_interface
    02_cudart
    03_kernel_launch
+   04_synchronization

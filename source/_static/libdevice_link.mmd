@@ -1,0 +1,23 @@
+flowchart TB
+    subgraph User["用户 device 代码"]
+        CU["vector_add.cu / sin_test.cu"]
+        II["*.cpp1.ii (cudafe 输出)"]
+    end
+
+    subgraph CICC["cicc + libnvvm.so"]
+        IR["用户 LLVM IR 模块"]
+        LD["LLVM Link: 按需链接 libdevice.10.bc"]
+        PASS["NVVM / LLVM Pass Pipeline"]
+        PTX["*.ptx 输出"]
+    end
+
+    subgraph Lib["NVVMIR_LIBRARY_DIR"]
+        BC["libdevice.10.bc<br/>349 个 __nv_* 函数<br/>464 KB bitcode"]
+    end
+
+    CU --> II --> IR
+    BC --> LD
+    IR --> LD --> PASS --> PTX
+
+    PTX -->|无数学调用| V1["vector_add.ptx<br/>无 libdevice 残留"]
+    PTX -->|sinf 等| V2["sin_test2.ptx<br/>内联展开，无 .call"]

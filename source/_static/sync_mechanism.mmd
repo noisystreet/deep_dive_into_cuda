@@ -1,0 +1,26 @@
+sequenceDiagram
+    participant Main as 主线程 (main)
+    participant RT as libcudart
+    participant Drv as libcuda.so
+    participant KO as nvidia.ko
+    participant GPU as GPU
+    participant Worker as Worker 线程
+
+    Main->>RT: cudaDeviceSynchronize()
+    RT->>Drv: cuCtxSynchronize_v2()
+    loop 排空各 Stream
+        Drv->>KO: ioctl(0x2b) fence 查询
+        Drv->>Worker: write(eventfd, 8B)
+        Main->>Main: futex(WAIT_BITSET)
+        GPU-->>KO: 完成中断 (MSI)
+        KO-->>Worker: eventfd 可读
+        Worker->>Worker: poll + read(eventfd)
+        Worker->>Main: futex(WAKE)
+    end
+    loop 最终 fence 确认
+        Drv->>KO: ioctl(0x2b) × 3
+        KO->>GPU: 读 fence 寄存器
+        GPU-->>KO: 全部完成
+    end
+    Drv-->>RT: 成功
+    RT-->>Main: 返回
