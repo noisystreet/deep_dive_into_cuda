@@ -11,3 +11,5 @@ nvcc 工具链分析
    05_nvlink
    06_libdevice
    07_host_link
+   08_fatbinary
+   09_tileir

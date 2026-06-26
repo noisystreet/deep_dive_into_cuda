@@ -1,0 +1,34 @@
+flowchart TB
+    subgraph Pass1["第 1 次 fatbinary（模块级）"]
+        PTX["vector_add.ptx"]
+        CUBIN["vector_add.sm_89.cubin"]
+        FB1["--create vector_add.fatbin<br/>+ --embedded-fatbin vector_add.fatbin.c"]
+        O1["vector_add.o<br/>.nv_fatbin 4064 B"]
+        PTX --> FB1
+        CUBIN --> FB1
+        FB1 --> O1
+    end
+
+    subgraph Middle["nvlink"]
+        NL["vector_add.o → vector_add_dlink.sm_89.cubin"]
+    end
+
+    subgraph Pass2["第 2 次 fatbinary（-link）"]
+        DC["vector_add_dlink.sm_89.cubin"]
+        FB2["--create vector_add_dlink.fatbin<br/>-link + --embedded-fatbin"]
+        O2["vector_add_dlink.o<br/>.nv_fatbin 1528 B"]
+        DC --> FB2
+        FB2 --> O2
+    end
+
+    subgraph Final["g++ 链接"]
+        MERGE[".nv_fatbin 段合并<br/>4064 + 1528 = 5592 B"]
+        REG["link.stub 注册 dlink fatbin"]
+    end
+
+    O1 --> NL
+    NL --> Pass2
+    O1 --> Final
+    O2 --> Final
+    Final --> MERGE
+    O2 --> REG

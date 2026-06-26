@@ -1,0 +1,35 @@
+flowchart TB
+    subgraph Sources["Tile IR 字节码来源"]
+        CUTILE["cuTile Python / 框架前端"]
+        CICC["cicc dlopen libTileIRCompiler_shared.so<br/>__tile__ / __tile_global__ 源码"]
+    end
+
+    subgraph Offline["离线汇编（编译期）"]
+        TIRAS["tileiras CLI<br/>/usr/local/cuda/bin/tileiras"]
+        CUBIN["ELF cubin / SASS"]
+        CUTILE --> TIRAS
+        CICC --> TIRAS
+        TIRAS --> CUBIN
+    end
+
+    subgraph Pack["打包"]
+        FB["fatbinary nvFatbinAddTileIR<br/>--tileir-cmdline"]
+        FAT["fatbin 容器"]
+        CUBIN --> FB
+        FB --> FAT
+    end
+
+    subgraph LinkJIT["链接期 JIT（nvlink）"]
+        NL["nvlink elfLink"]
+        LIB["dlopen libnvidia-tileiras.so"]
+        NVAPI["nvTileIRCompileProgram"]
+        NL --> LIB --> NVAPI
+    end
+
+    FAT --> NL
+
+    subgraph Inspect["分析工具"]
+        CU["cuobjdump -ltileir / -xtileir"]
+    end
+
+    FAT --> CU
