@@ -18,6 +18,31 @@ extensions = [
 
 mermaid_output_format = 'raw'
 
+# 全局 Mermaid 渲染：放大字体、放宽横向压缩，避免复杂图被挤太小
+mermaid_width = '100%'
+mermaid_height = 'auto'
+mermaid_init_config = {
+    'startOnLoad': False,
+    'theme': 'default',
+    'themeVariables': {
+        'fontSize': '18px',
+        'fontFamily': '"Noto Sans SC", "Source Han Sans SC", "PingFang SC", sans-serif',
+    },
+    'flowchart': {
+        'useMaxWidth': False,
+        'htmlLabels': True,
+        'nodeSpacing': 50,
+        'rankSpacing': 55,
+        'padding': 12,
+    },
+    'sequence': {
+        'useMaxWidth': False,
+        'messageFontSize': '16px',
+        'noteFontSize': '16px',
+        'actorFontSize': '16px',
+    },
+}
+
 templates_path = ['_templates']
 language = 'zh_CN'
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
