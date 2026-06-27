@@ -1,0 +1,16 @@
+flowchart TB
+    subgraph USER["用户态 (CPU)"]
+        CUDA["cudaMalloc(8 MB)"] --> IOCTL["ioctl(0x2a) 分配 GPU 虚拟地址"]
+        CUDA --> MMAP["mmap GPU BAR (PROT_NONE)"]
+        IOCTL --> BAR["200000000-200200000 ---p<br/>PROT_NONE (保留)"]
+        CUDA --> BAR
+    end
+    subgraph DRV["IOCTL 通道<br/>nvidia.ko"]
+        IOCTL --> DEV_MEM["ioctl(0x2a) 分配物理显存"]
+        DEV_MEM --> BAR2["200200000-200400000 rw-s<br/>/dev/nvidia0<br/>(实际 GPU BAR)"]
+    end
+    subgraph GPU["GPU 侧"]
+        BAR2 --> VRAM["GPU 显存"]
+        cudaMemset --> IOCTL_MEMSET["ioctl(0x4e) DMA 清零"]
+        IOCTL_MEMSET --> VRAM
+    end
