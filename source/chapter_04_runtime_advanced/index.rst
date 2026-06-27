@@ -10,3 +10,4 @@
    04_uvm_pagefault
    05_cuda_context
    06_green_context
+   07_cuda_graph_capture

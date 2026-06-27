@@ -13,8 +13,8 @@ TileIR 与 tileiras 分析
 
    环境: CUDA 13.1 / Driver 595.58.03 / Linux x86-64
 
-   样例 examples/vector_add.cu 走经典 SIMT 路径，不含 TileIR——
-   本章用工具链二进制分析与 tileiras 命令行互证。
+   样例 ``examples/vector_add.cu`` 走经典 SIMT 路径，不含 TileIR——
+   本章用工具链二进制分析与 ``tileiras`` 命令行互证。
 
 --------------
 
