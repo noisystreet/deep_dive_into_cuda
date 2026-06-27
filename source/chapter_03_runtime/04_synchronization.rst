@@ -14,7 +14,7 @@
    真正昂贵的不是同步本身，而是 GPU 执行所有排队工作所需的时间。
 
 
-   环境: CUDA 13.1 / Driver 595.58.03 / sm_89 (Ada Lovelace) / Linux x86-64
+环境: CUDA 13.1 / Driver 595.58.03 / sm_89 (Ada Lovelace) / Linux x86-64
 
 --------------
 

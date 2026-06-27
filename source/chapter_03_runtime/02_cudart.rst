@@ -15,8 +15,6 @@ LIBCUDART 分析：CUDA Runtime API 库
    如果要做多 GPU、动态加载 cubin、或者控制 context 生命周期，
    就必须直接使用 Driver API。
 
-   内部调用 libcuda (Driver API) 完成实际 GPU 操作
-
    分析基于 CUDA 13.1 (build 37061995)
 
 --------------

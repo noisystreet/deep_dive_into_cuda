@@ -14,10 +14,10 @@ libnvvm / libdevice 深度分析
    （unit in the last place）误差在 2 以内，而 IEEE 标准要求 0.5。
    这是 GPU 通过**精度换速度**的典型设计取舍。
 
-   以及 libnvvm API 在其中的角色。
+以及 libnvvm API 在其中的角色。
 
-   分析基于 CUDA 13.1 (build 37061995)，主线程序 ``examples/vector_add.cu``，
-   对照实验 ``sinf(x)`` kernel。
+分析基于 CUDA 13.1 (build 37061995)，主线程序 ``examples/vector_add.cu``，
+对照实验 ``sinf(x)`` kernel。
 
    环境: Linux x86-64 / sm_89
 

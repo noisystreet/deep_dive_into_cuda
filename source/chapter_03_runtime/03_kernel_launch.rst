@@ -15,10 +15,10 @@ Kernel Launch 深度追踪
    ——如果每个 kernel 执行时间小于 10 微秒，launch 开销就会占据
    主导地位。
 
+CUDA 13.1 / Driver 595.58.03 / sm_89 (Ada Lovelace) / Linux x86-64
 
-   环境: CUDA 13.1 / Driver 595.58.03 / sm_89 (Ada Lovelace) / Linux x86-64
+示例: ``examples/vector_add.cu`` 第 40 行
 
-   示例: ``examples/vector_add.cu`` 第 40 行
 
 --------------
 

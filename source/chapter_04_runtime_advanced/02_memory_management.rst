@@ -15,8 +15,8 @@ CUDA 内存管理深度分析
    一个常见的做法是用 ``cudaHostRegister`` 将已分配的 malloc
    内存注册为 pinned，用完后注销，而非全部使用 ``cudaHostAlloc``。
 
-   每种分配路径的实际系统调用，揭示 `cudaMalloc`、`cudaHostAlloc`、
-   `cudaMallocManaged` 和 `cudaMallocAsync` 在内核侧的真实差异。
+   每种分配路径的实际系统调用，揭示 ``cudaMalloc``、``cudaHostAlloc``、
+   ``cudaMallocManaged`` 和 ``cudaMallocAsync`` 在内核侧的真实差异。
 
    环境: CUDA 13.1 / Driver 595.58.03 / sm_89 (Ada Lovelace) / Linux x86-64
 
