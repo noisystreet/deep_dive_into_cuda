@@ -3,6 +3,18 @@ Green Context：GPU 资源分区与轻量级上下文
 
    Green Context 是 CUDA 12.x+ 引入的**硬件资源分区**抽象。与
    传统 Context 管理整个 GPU 不同，Green Context 允许将一个 GPU 的
+
+.. admonition:: 你知道吗？
+
+   Green Context 的"green"这个名字有一个有趣的来源：它不是指
+   环保，而是指"**轻量级、可快速创建**"的上下文，就像
+   "green thread"（用户态线程）对比 OS 线程一样。NVIDIA 的文档
+   甚至明确指出 green context 不是线程安全的——它只能被一个线程
+   使用，这进一步印证了与 green thread 的类比。在实际部署中，
+   Green Context 最常见的用途是 MIG（Multi-Instance GPU）的软件
+   替代方案——当 GPU 不支持 MIG 硬件分区时，Green Context 在驱动
+   层提供类似的分区能力。
+
    SM（流多处理器）划分为多个 partition，每个 partition 创建独立的
    轻量级上下文。这是 MIG（Multi-Instance GPU）在单 GPU 内的软件级
    等价实现。

@@ -3,6 +3,17 @@ Streams 与 CUDA Graphs 深度分析
 
    Streams 和 CUDA Graphs 是 CUDA 并发与编译的两种核心抽象。本节用
    strace 和 ioctl 模式分析它们的 **运行时真实行为**：stream 如何提交到
+
+.. admonition:: 你知道吗？
+
+   你可能在 PyTorch/TensorFlow 中使用过 CUDA Streams 而不自知——
+   每次调用 ``torch.cuda.synchronize()`` 背后就是一个 stream 同步
+   操作。深度学习框架的默认行为是：每个 CUDA 设备有一个默认 stream，
+   所有操作（前向、反向、优化）都在这个 stream 上串行执行。这也是
+   为什么 ``torch.cuda.Stream`` 可以加速推理——通过将不同层的计算
+   分配到不同 stream 实现**计算和传输的重叠**。你可以在 PyTorch 中
+   用 ``with torch.cuda.stream(stream):`` 将操作指派到特定 stream。
+
    GPU 命令队列，Graph 实例化是否走 nvcc 子进程，以及它们与普通
    launch 的系统调用差异。
 

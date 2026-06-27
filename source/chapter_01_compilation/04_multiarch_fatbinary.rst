@@ -7,6 +7,15 @@
 
    环境: CUDA 13.1 / sm_89 (Ada Lovelace) / Linux x86-64
 
+.. admonition:: 你知道吗？
+
+   为什么需要多架构 fat binary？一个直接的场景是游戏行业：Steam 上
+   的 CUDA 应用必须同时支持 GTX 1060 (sm_61) 到 RTX 4090 (sm_89)
+   的几十种 GPU。如果只提供 sm_89 的 SASS，Kepler 用户无法运行；
+   如果只提供 PTX，驱动 JIT 编译会增加首次启动延迟。NVCC 的
+   ``-gencode`` 机制让你可以在一个二进制中同时打包多个 SASS 镜像和
+   一个 PTX 回退方案，兼顾性能和兼容性。
+
 --------------
 
 为什么需要多架构 Fat Binary？

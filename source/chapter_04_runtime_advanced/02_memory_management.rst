@@ -3,6 +3,18 @@ CUDA 内存管理深度分析
 
    CUDA 程序能同时访问 CPU 内存和 GPU 显存，这种双重内存模型是其
    编程复杂性的核心来源。本节通过 strace 和 ``/proc/pid/maps`` 捕获
+
+.. admonition:: 你知道吗？
+
+   CUDA 中有一个常用的性能优化技巧你可能不知道：
+   ``cudaHostAlloc`` 分配的 pinned memory 不仅对 GPU→CPU 传输
+   速度有巨大影响（5-10 倍于 pageable memory），还会改变 CPU 端的
+   内存行为。因为物理页被锁定，系统无法将这些页换出到磁盘——
+   过度分配 pinned memory 会导致系统可用物理内存减少，甚至触发
+   OOM。这就是为什么生产环境通常**限制 pinned memory 使用量**。
+   一个常见的做法是用 ``cudaHostRegister`` 将已分配的 malloc
+   内存注册为 pinned，用完后注销，而非全部使用 ``cudaHostAlloc``。
+
    每种分配路径的实际系统调用，揭示 `cudaMalloc`、`cudaHostAlloc`、
    `cudaMallocManaged` 和 `cudaMallocAsync` 在内核侧的真实差异。
 

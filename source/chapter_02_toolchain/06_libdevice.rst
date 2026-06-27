@@ -3,6 +3,17 @@ libnvvm / libdevice 深度分析
 
    第 2.3 节已从架构层面介绍 cicc、libnvvm.so 与 libdevice.10.bc。
    本节聚焦 **libdevice 如何在编译期被链接、优化并消失于最终 PTX**，
+
+.. admonition:: 你知道吗？
+
+   libdevice 提供的数学函数（``sinf``、``expf``、``sqrtf`` 等）
+   执行速度因 GPU 架构而异。以 ``sinf`` 为例：它不调用 CPU 的
+   libm，而是使用 GPU 硬件指令 ``MUFU.SIN``（MUlti-Function Unit），
+   只需 **4 个时钟周期**——比 CPU 上的 ``sinf``（通常 50-100 周期）
+   快一个数量级。代价是精度略低：CUDA 的 ``__sinf`` 只保证 ULP
+   （unit in the last place）误差在 2 以内，而 IEEE 标准要求 0.5。
+   这是 GPU 通过**精度换速度**的典型设计取舍。
+
    以及 libnvvm API 在其中的角色。
 
    分析基于 CUDA 13.1 (build 37061995)，主线程序 ``examples/vector_add.cu``，

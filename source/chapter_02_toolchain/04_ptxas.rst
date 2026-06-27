@@ -4,6 +4,15 @@ PTXAS 分析：PTX→SASS 汇编器
    ptxas = PTX Assembler，是 CUDA 工具链中负责将 PTX 虚拟汇编代码 编译为
    SASS（Streaming ASSembler，GPU 实际机器码）的关键组件
 
+.. admonition:: 你知道吗？
+
+   你可能会好奇一个 CUDA kernel 的编译产物有多大。以最简单的
+   vec_add 为例，ptxas 输出仅 800 字节的 SASS——但经过 fatbinary
+   打包、ELF 嵌入、链接等步骤后，最终可执行文件增长了 1.1 MB。
+   这多出来的 1.1 MB 几乎全是 ``libcudart_static.a`` 的功劳。
+   换句话说，你写的那几行 GPU 代码只占可执行文件体积的 **0.07%**。
+
+
    分析基于 CUDA 13.1 (build 37061995)
 
 --------------

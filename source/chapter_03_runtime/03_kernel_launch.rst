@@ -4,6 +4,18 @@ Kernel Launch 深度追踪
    聚焦 ``vector_add<<<blocks, threads>>>(...)`` 这一行代码，从反汇编、
    stub 源码与 strace 三条线索，逐步还原 kernel 启动的完整调用链。
 
+.. admonition:: 你知道吗？
+
+   你是否想过 GPU kernel 的 launch 延迟有多大？从 CPU 调用
+   ``vec_add<<<>>>`` 到 GPU 第一条 SASS 指令开始执行，大约需要
+   **5-15 微秒**。这看起来很短，但相比 CPU 的函数调用（纳秒级）
+   已经慢了数千倍。延迟的来源包括：(1) 参数构建和命令缓冲区打包
+   (2) ioctl 陷入内核 (3) 驱动在 GPU 命令队列中插入指令
+   (4) GPU 调度器分发到 SM。这就是为什么 GPU 适合**粗粒度并行**
+   ——如果每个 kernel 执行时间小于 10 微秒，launch 开销就会占据
+   主导地位。
+
+
    环境: CUDA 13.1 / Driver 595.58.03 / sm_89 (Ada Lovelace) / Linux x86-64
 
    示例: ``examples/vector_add.cu`` 第 40 行

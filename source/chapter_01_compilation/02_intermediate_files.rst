@@ -5,6 +5,22 @@ NVCC 编译中间产物分析
 
    环境: CUDA 13.1 / sm_89 (Ada Lovelace)
 
+.. admonition:: 你知道吗？
+
+   当 CUDA kernel 出现"未定义行为"级别的错误（如意外写坏内存、PTX
+   JIT 失败），最有效的定位方式是 ``nvcc --keep``。保留的 ``.ptx``
+   文件可以单独用 ``ptxas --info`` 检查，``.cubin`` 可以用
+   ``cuobjdump -sass`` 反汇编查看实际硬件指令。CUDA 编译器不会像
+   GCC/Clang 那样输出详细优化报告，中间文件是唯一的"编译器日志"。
+
+.. admonition:: 你知道吗？
+
+   虽然日常开发不会每次都用 ``--keep``（因为它大幅增加编译时间），
+   但以下场景中它是标准做法：(1) 提交 CUDA bug report 给 NVIDIA 时，
+   ``--keep`` 的输出是必附内容；(2) 分析性能问题时，查看 ptxas 生成
+   的 SASS 指令数可以帮助确定寄存器溢出；(3) 调试 ``cudaMemset``
+   未按预期工作的底层问题时，fatbin 的 ELF 段布局是关键线索。
+
 中间产物总览
 ------------
 

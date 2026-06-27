@@ -16,6 +16,16 @@ NVCC (NVIDIA CUDA Compiler) 将 ``.cu``
 **Device 代码**\ （运行在 GPU
 上），并最终将它们链接到同一个可执行文件中。
 
+.. admonition:: 你知道吗？
+
+   CUDA 选择将 Host 和 Device 代码分离编译，而非混合编译，是一个有意
+   为之的设计决策。2007 年 Fermi 架构发布时，CUDA 的编译流程沿用了
+   PTX (Parallel Thread Execution) 作为中间表示，这与 Vulkan 的 SPIR-V
+   思路相似。PTX 是一个**虚拟 ISA** ——它不绑定具体硬件，NVCC 生成的
+   PTX 可以在未来任何代 GPU 上通过 JIT 重新编译。这一设计的直接好处是：
+   Kepler (sm_30) 时代写的 CUDA 程序，PTX 依然能在今天的 Ada Lovelace
+   (sm_89) 上运行。
+
 整个过程分为 **11 个步骤**\ ，可归纳为 **5 个阶段**\ ：
 
 1. **环境准备** — 设置编译环境变量

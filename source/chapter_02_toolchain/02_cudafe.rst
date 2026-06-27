@@ -3,6 +3,17 @@ CUDAFE++ 分析：CUDA 语言前端
 
    cudafe++ = CUDA Front End，是 CUDA 编译工具链中负责 **解析 CUDA
    语法**\ 、 **分离 host/device 代码**\ 、\ **生成 host stub**
+
+.. admonition:: 你知道吗？
+
+   为何 NVIDIA 选择 EDG 而非 Clang 作为 CUDA 的 C++ 前端？这其实
+   是一个**历史遗留问题**。CUDA 1.0 (2007) 发布时，LLVM/Clang 还
+   远未成熟——LLVM 1.0 才刚能编译 C，Clang 到 2009 年才可用。EDG
+   (Edison Design Group) 当时已是 C++ 解析的事实标准，Intel、IBM
+   的编译器都基于它。NVIDIA 选择了最稳妥的路径：用 EDG 做解析，
+   用自家的 NVVM/LLVM 做优化和代码生成。直到今天，Clang 的 CUDA
+   支持仍需通过 ``-x cuda`` 模式模拟这一流程，兼容性仍不如 nvcc。
+
    的关键组件
 
    分析基于 CUDA 13.1 (build 37061995)

@@ -6,6 +6,15 @@ Fat Binary 结构分析
 
    环境: CUDA 13.1 / sm_89 (Ada Lovelace)
 
+.. admonition:: 你知道吗？
+
+   很多人都认为 ``.cubin`` 文件是 NVIDIA 专有的二进制格式，但实际上
+   cubin 是**标准 ELF 文件**——你甚至可以用 ``readelf -a`` 解析它。
+   NVIDIA 在 ELF 的标准框架内自定义了 ``.nv.info``、``.nv.constant``
+   等段来存放 GPU 特有的元数据。这意味着你的 GPU kernel 编译产物和
+   Linux 上的可执行文件共享同一套容器格式，只是内容换成了 SASS
+   指令而非 x86 指令。
+
 概述
 ----
 

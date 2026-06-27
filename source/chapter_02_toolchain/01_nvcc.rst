@@ -4,6 +4,17 @@ NVCC 分析：工具链架构
    对 nvcc 可执行文件进行分析，揭示其作为”驱动编译器 (Driver
    Compiler)“的内部架构
 
+.. admonition:: 你知道吗？
+
+   NVCC 的名字源自 NVIDIA Compiler Collection，与 GCC (GNU Compiler
+   Collection) 的命名如出一辙。有趣的是，NVCC 本身并不真正"编译"
+   任何代码——它更像一个**编译调度器**：它调用真正的编译器
+   （cudafe++ 做语法分析、cicc 生成 PTX、ptxas 做汇编），自己只负责
+   参数解析和文件路由。NVIDIA 选择这种"外包"架构而非自研完整编译器，
+   是因为可以复用 GCC/LLVM 的 host 编译能力，将精力集中在 GPU 特有
+   的前端和后端上。
+
+
 分析工具与方法
 --------------
 
