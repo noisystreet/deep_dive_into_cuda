@@ -21,4 +21,14 @@ serve: html
 	@cd $(BUILDDIR)/html && python3 -m http.server $(PORT)
 
 clean:
-	rm -rf $(BUILDDIR)
+	rm -rf $(BUILDDIR) $(EXAMPLES_DIR)/$(BUILD_DIR)
+
+EXAMPLES_DIR = examples
+BUILD_DIR    = build
+
+examples:
+	@mkdir -p $(EXAMPLES_DIR)/$(BUILD_DIR)
+	cd $(EXAMPLES_DIR)/$(BUILD_DIR) && cmake .. && make
+	@echo ""
+	@echo "=== Examples built successfully ==="
+	@ls -lh $(EXAMPLES_DIR)/$(BUILD_DIR)/vector_add $(EXAMPLES_DIR)/$(BUILD_DIR)/wmma_matmul

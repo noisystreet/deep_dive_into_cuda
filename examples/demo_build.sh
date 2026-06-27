@@ -1,11 +1,11 @@
+#!/bin/bash
 # 演示编译过程中各中间产物的查看
 # 使用 --keep 保留全部中间文件
 
 NVCC_FLAGS="--verbose --keep -arch=sm_89"
-SRC="../examples/vector_add.cu"
 
-echo "=== 1. 编译 CUDA 程序 (保留中间文件) ==="
-nvcc $NVCC_FLAGS -o vector_add $SRC
+echo "=== 1. 编译 vector_add (保留中间文件) ==="
+nvcc $NVCC_FLAGS -o vector_add vector_add.cu
 
 echo ""
 echo "=== 2. 查看生成的中间文件 ==="
@@ -16,13 +16,18 @@ echo "=== 3. 查看 PTX (虚拟汇编) ==="
 head -30 vector_add.ptx
 
 echo ""
-echo "=== 4. 查看 cubin 结构 ==="
-cuobjdump -elf vector_add.sm_89.cubin 2>/dev/null || echo "cuobjdump not available"
-
-echo ""
-echo "=== 5. 运行程序 ==="
+echo "=== 4. 运行程序 ==="
 ./vector_add
 
 echo ""
-echo "=== 6. strace 跟踪驱动调用 ==="
-strace -e ioctl,mmap,openat ./vector_add 2>&1 | grep -E 'nvidia|mmap' | head -10
+echo "=========================================="
+echo "=== 编译 wmma_matmul (保留中间文件) ==="
+nvcc $NVCC_FLAGS -o wmma_matmul wmma_matmul.cu
+
+echo ""
+echo "=== 查看 WMMA 版本的 PTX ==="
+grep 'wmma\.' wmma_matmul.ptx | head -10
+
+echo ""
+echo "=== 运行 WMMA 版本 ==="
+./wmma_matmul

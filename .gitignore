@@ -1,4 +1,5 @@
 _build/
+examples/build/
 __pycache__/
 *.pyc
 *.pyo

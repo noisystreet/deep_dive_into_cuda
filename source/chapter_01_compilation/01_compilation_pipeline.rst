@@ -388,5 +388,159 @@ NVCC (NVIDIA CUDA Compiler) 将 ``.cu``
 
 .. mermaid:: ../_static/compilation_pipeline.mmd
 
+动态: 步骤 7-8 的顺序在实际执行中可能有所不同，取决于 nvcc 的链接策略。
+
+对比: WMMA 矩阵乘的编译差异
+-----------------------------
+
+WMMA (Warp Matrix Multiply-Accumulate) 使用 Tensor Core 的矩阵乘
+kernel 在编译过程中展现出与简单向量加法 **截然不同的特征**，揭示了各工
+具在复杂代码路径下的行为差异。
+
+程序: ``wmma_matmul.cu`` — 16×16×16 half→float 矩阵乘法，使用
+``nvcuda::wmma::mma_sync`` API。
+
+.. list-table:: 编译产物对比 (sm_89, CUDA 13.1)
+   :header-rows: 1
+   :widths: 30 20 20 30
+
+   * - 维度
+     - vector_add
+     - wmma_matmul
+     - 倍数
+   * - ``.cubin`` 大小
+     - 3.5 KB
+     - 12 KB
+     - 3.4×
+   * - Fat binary 大小
+     - 4 KB
+     - 14 KB
+     - 3.5×
+   * - ``.ptx`` 行数
+     - 55 行
+     - 283 行
+     - 5.1×
+   * - PTX f32 寄存器
+     - ``%f<4>``
+     - ``%f<146>``
+     - 36.5×
+   * - PTX b32 寄存器
+     - ``%r<6>``
+     - ``%r<119>``
+     - 19.8×
+   * - SASS ``HMMA`` 指令
+     - 0
+     - 10
+     - ∞
+   * - ``_dlink.*`` 中间文件
+     - 无
+     - 有
+     - 触发 device 链接
+
+PTX 指令层面
+~~~~~~~~~~~~~~
+
+WMMA API 在 PTX 层面映射为 **3 条核心指令** 的循环：
+
+.. code:: text
+
+   ; 加载 A 矩阵的 16×16 片段 (每个线程 8 个 half)
+   wmma.load.a.sync.aligned.row.m16n16k16.global.f16
+       {%r27, %r28, ..., %r34}, [%rd15], %r18;
+
+   ; 加载 B 矩阵的 16×16 片段
+   wmma.load.b.sync.aligned.col.m16n16k16.global.f16
+       {%r36, %r37, ..., %r43}, [%rd19], %r17;
+
+   ; Tensor Core 矩阵乘累加: D += A * B
+   ; 这条指令覆盖了 16×16×16 = 4096 个乘加操作
+   wmma.mma.sync.aligned.row.col.m16n16k16.f32.f32
+       {%f82, ..., %f89}, {%r27, ..., %r34},
+       {%r36, ..., %r43}, {%f145, ..., %f138};
+
+   ; 存储 16×16 结果
+   wmma.store.d.sync.aligned.row.m16n16k16.global.f32
+       [%rd47], {%f145, ..., %f138}, %r17;
+
+关键观察：
+
+- ``wmma.load`` 以 **寄存器组** 为单位操作，每个线程加载 8 个 half 元素
+  (b32 寄存器)。一个 warp 的 32 个线程合起来恰好组成 16×16 = 256 个
+  half 的矩阵片段——这是 WMMA 的 "warp 同步" 语义的基础。
+- ``wmma.mma.sync`` 一条指令 = **4096 个乘加** (16×16×16)，而
+  vector_add 用 22 条 SASS 指令完成了 1 次加法——这解释了 Tensor Core
+  的吞吐优势。
+- 寄存器的编号顺序 (``{%f145, %f144, ..., %f138}``) 反映了 **累加器的内
+  部数据布局**，每个线程持有 8 个 float 累加结果。
+
+SASS 指令层面
+~~~~~~~~~~~~~~
+
+ptxas 将 ``wmma.mma.sync`` 映射为 **HMMA.16816.F32** (Half-precision
+Matrix Multiply-Accumulate, 16×16×16) 指令：
+
+.. code:: text
+
+   /*05a0*/  HMMA.16816.F32 R20, R4, R12, R20 ;
+   /*08e0*/  HMMA.16816.F32 R20, R12.reuse, R24, R20 ;
+   /*08f0*/  HMMA.16816.F32 R16, R12, R28, R16 ;
+
+HMMA 是 sm_89 (Ada Lovelace) 上 Tensor Core 的原生指令。与普通 FADD
+的最大区别:
+
+1. **操作数语义**: HMMA 操作的是寄存器组，而非单个值——一条指令同时处理
+   16×16=256 个元素的矩阵分块。
+
+2. **``.reuse`` 修饰符**: ``R12.reuse`` 提示硬件该寄存器的值可以被多个
+   Tensor Core 流水线复用，减少 register file 读取次数。
+
+3. **谓词省略**: HMMA 指令不带 ``@P0`` 谓词，因为 Tensor Core 本质上不支持分支——整个 warp 必须同步执行。
+
+nvlink 介入的触发
+~~~~~~~~~~~~~~~~~~
+
+与 vector_add 不同，wmma_matmul 的编译生成了 ``_dlink.*`` 中间文件：
+
+::
+
+   wmma_matmul_dlink.sm_89.cubin  ← nvlink 输出
+   wmma_matmul_dlink.fatbin.c     ← fatbinary 重新打包
+   wmma_matmul_dlink.reg.c        ← register stub
+
+这是因为 ``nvcuda::wmma::mma_sync`` 依赖于
+**libcudadevrt.a** (CUDA Device Runtime) 中的 device 函数。即使代码中
+没有显式调用 ``__syncthreads()`` 以外的 device 函数，WMMA 的内部实现仍
+可能引入了对 device runtime 的依赖,这触发了 nvlink 的 device 链接路径。
+而 vector_add 无需任何 device 库链接。
+
+总结对比
+~~~~~~~~
+
+.. list-table::
+   :header-rows: 1
+   :widths: 25 35 40
+
+   * - 维度
+     - vector_add
+     - wmma_matmul
+   * - 编译模式
+     - 单路径，无需 nvlink
+     - 触发 nvlink + fatbinary 二次打包
+   * - cicc 输出
+     - 简单的 ``ld/st/add/setp``
+     - ``wmma.load/mma/store`` 抽象指令
+   * - ptxas 指令选择
+     - FADD / LDG / STG 等标量指令
+     - ``HMMA.16816.F32`` Tensor Core 指令
+   * - 寄存器压力
+     - 4 f32 + 6 b32 + 11 b64
+     - 146 f32 + 119 b32 + 49 b64
+   * - cubin 体积
+     - 3.5 KB
+     - 12 KB (3.4×)
+   * - Fat binary
+     - 4 KB
+     - 14 KB (3.5×)
+
 *分析基于 CUDA 13.1 / sm_89 (Ada Lovelace)
 架构，不同版本/架构的详细参数可能有所不同。*
