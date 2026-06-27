@@ -8,3 +8,4 @@
    02_cudart
    03_kernel_launch
    04_synchronization
+   05_streams_graphs

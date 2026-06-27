@@ -1,0 +1,16 @@
+flowchart TB
+    subgraph S1["默认 stream (同步)"]
+        K1["kernel A (launch)"] --> W1["cudaDeviceSynchronize<br/>ioctl(0x2b) fence"]
+    end
+    subgraph S2["两个 stream 并发"]
+        K2["s1: kernel A (launch)"] --> W2["cudaStreamSynchronize(s1)<br/>ioctl(0x2b) fence"]
+        K3["s2: kernel B (launch)"] --> W3["cudaStreamSynchronize(s2)<br/>ioctl(0x2b) fence"]
+    end
+    subgraph S3["stream 间依赖"]
+        K4["s1: kernel A (launch)"] --> E1["cudaEventRecord(e1, s1)"]
+        E1 --> W4["cudaStreamWaitEvent(s2, e1)<br/>GPU 栅栏, 无 ioctl"]
+        W4 --> K5["s2: kernel B (launch)"]
+        K5 --> W5["cudaDeviceSynchronize<br/>ioctl(0x2b)"]
+    end
+    style E1 fill:#fff9c4
+    style W4 fill:#c8e6c9

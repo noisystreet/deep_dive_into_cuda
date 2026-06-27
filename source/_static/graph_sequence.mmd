@@ -1,0 +1,29 @@
+sequenceDiagram
+    participant User as 用户程序
+    participant libcudart as libcudart
+    participant libcuda as libcuda (Driver)
+    participant GPU as GPU
+
+    Note over User,GPU: 普通 launch
+    User->>libcudart: vec_add<<<>>>(args)
+    libcudart->>libcuda: cuLaunchKernel()
+    libcuda->>GPU: ioctl(0x4e, cmd_buf)
+    Note over User,GPU: cudaDeviceSynchronize
+    libcuda->>GPU: ioctl(0x2b, fence)
+
+    Note over User,GPU: Graph 捕获
+    User->>libcudart: cudaStreamBeginCapture(stream)
+    User->>libcudart: vec_add<<<>>>(args) [captured]
+    User->>libcudart: vec_mul<<<>>>(args) [captured]
+    User->>libcudart: cudaStreamEndCapture() → graph
+
+    Note over User,GPU: Graph 实例化 (进程内 JIT)
+    libcudart->>libcuda: cudaGraphInstantiate()
+    libcuda->>libcuda: dlopen + NVVM JIT
+    libcuda-->>libcudart: graph_exec
+
+    Note over User,GPU: Graph launch
+    User->>libcudart: cudaGraphLaunch(graph_exec)
+    libcudart->>libcuda: cuGraphLaunch()
+    libcuda->>GPU: ioctl(0x4e, cmd_buf)
+    Note right of GPU: 与普通 launch<br/>相同的 ioctl
