@@ -219,6 +219,28 @@ __cudaFatCubinHandle（BSS）。
 未使用该选项，但单文件 ``vector_add`` 链接仍成功——依赖顺序已由
 ``linkLibs.rsp`` 固定。
 
+----------------
+
+关键发现
+-----------
+
+1. **nvcc 不是链接器** — device 编译完成后，nvcc 把带有 ``.nv_fatbin``
+   段的 ``.o`` 交给系统 ``g++``。最后的链接步骤完全由标准 C++ 链接器
+   完成，nvcc 只是传递 ``-L`` / ``-l`` 参数。
+
+2. **Fat Binary 通过特殊段嵌入** — ``.nvFatBinSegment`` 段是连接
+   编译器与运行时的桥梁。``__fatBinC_Wrapper_t`` 结构体中的指针
+   指向 ``.nv_fatbin`` 段，launch 时驱动通过这个指针找到 fat binary。
+
+3. **静态链接占主导** — 默认使用 ``-lcudart_static`` 而非
+   ``-lcudart.so``，这意味着 ``libcudart_static.a`` (1.4 MB) 被
+   完全嵌入可执行文件。好处是独立部署，代价是二进制体积增加。
+
+4. **nvlink 的二次 fatbinary** — 当触发 device 链接时，nvlink 输出
+   的 cubin 需要再次调用 ``fatbinary`` 打包，生成 ``_dlink.fatbin.c``，
+   然后由 g++ 编译为 ``_dlink.o`` 参与最终链接。普通 vector_add
+   不需要这一步。
+
 --------------
 
 与 Fat Binary 文档的交叉引用

@@ -34,33 +34,25 @@ div[class*="highlight"] pre {
     margin-bottom: 4px;
 }
 
-/* Mermaid 图：允许自然宽度，横向滚动；覆盖插件默认的 100% 压缩 */
+/* Mermaid 图：自适应容器宽度，禁止横向溢出 */
 .mermaid-container,
 pre.mermaid {
     overflow-x: auto;
     margin: 1.25em 0;
+    text-align: center;
 }
 
 .mermaid-container > pre,
 pre.mermaid {
     width: 100%;
     max-width: 100%;
+    padding: 0;
 }
 
-.mermaid-container > pre > svg,
-pre.mermaid > svg {
+.mermaid-container svg,
+pre.mermaid svg {
     display: block;
-    height: auto !important;
-    min-height: 240px;
-    width: auto !important;
-    max-width: none !important;
     margin: 0 auto;
-}
-
-/* 全屏模式下同样放大可读性 */
-.mermaid-container-fullscreen pre.mermaid > svg,
-.mermaid-container-fullscreen .mermaid svg {
-    max-width: none !important;
-    width: auto !important;
-    height: auto !important;
+    max-width: 100%;
+    height: auto;
 }

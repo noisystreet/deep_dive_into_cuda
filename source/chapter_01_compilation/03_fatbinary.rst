@@ -399,6 +399,53 @@ binary 数据块：
 
 --------------
 
+cubin vs fatbin 对比
+--------------------
+
+.. list-table::
+   :header-rows: 1
+   :widths: 20 40 40
+
+   * - 维度
+     - ``.cubin`` (CUDA Binary)
+     - ``.fatbin`` (Fat Binary)
+   * - 本质
+     - 标准 ELF64 可执行文件
+       (``ET_EXEC``)
+     - 自定义容器格式（自描述头 + image 目录 + 数据）
+   * - 内容
+     - 单一架构的 SASS 机器码 +
+       元数据 (.text / .nv.info /
+       .nv.constant)
+     - 多个 image 打包：
+       PTX 文本 + 多架构 ELF cubin
+   * - 文件结构
+     - ELF header + program/section
+       headers + .text + .symtab 等
+     - 62 B 容器头 + image 目录 +
+       连续 image 数据块（明文无压缩）
+   * - 大小
+     - 3.5 KB (vector_add)
+     - 4 KB (vector_add) — 多出 PTX +
+       容器头部开销
+   * - 生成阶段
+     - ptxas 输出（PTX → SASS）
+     - fatbinary 输出（打包 cubin + PTX）
+   * - 链接关系
+     - 可被 nvlink 链接（多个 cubin
+       合并为一个）
+     - 不参与链接——仅作为数据嵌入
+       ``.fatbin.c``
+   * - 运行时
+     - 由驱动直接加载到 GPU 执行
+     - 驱动解析容器头，根据 GPU 型号
+       选择合适 image 再加载
+   * - 架构兼容性
+     - 不可跨架构（sm_89 的 cubin
+       无法在 sm_90 上运行）
+     - 可跨架构（同时打包多架构 cubin
+       及 PTX 回退）
+
 关键发现
 -----------
 

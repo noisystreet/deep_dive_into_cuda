@@ -18,28 +18,32 @@ extensions = [
 
 mermaid_output_format = 'raw'
 
-# 全局 Mermaid 渲染：放大字体、放宽横向压缩，避免复杂图被挤太小
+# 全局 Mermaid 渲染：与 sphinx_rtd_theme 协调的尺寸
 mermaid_width = '100%'
 mermaid_height = 'auto'
 mermaid_init_config = {
     'startOnLoad': False,
-    'theme': 'default',
+    'theme': 'neutral',
     'themeVariables': {
-        'fontSize': '18px',
-        'fontFamily': '"Noto Sans SC", "Source Han Sans SC", "PingFang SC", sans-serif',
+        'fontSize': '14px',
+        'primaryTextColor': '#404040',
+        'secondaryColor': '#f5f5f5',
+        'tertiaryColor': '#fff',
+        'lineColor': '#666',
+        'fontFamily': '"Lato", "Noto Sans SC", "Source Han Sans SC", "PingFang SC", sans-serif',
     },
     'flowchart': {
-        'useMaxWidth': False,
+        'useMaxWidth': True,
         'htmlLabels': True,
-        'nodeSpacing': 50,
-        'rankSpacing': 55,
-        'padding': 12,
+        'nodeSpacing': 30,
+        'rankSpacing': 35,
+        'padding': 6,
     },
     'sequence': {
-        'useMaxWidth': False,
-        'messageFontSize': '16px',
-        'noteFontSize': '16px',
-        'actorFontSize': '16px',
+        'useMaxWidth': True,
+        'messageFontSize': '13px',
+        'noteFontSize': '13px',
+        'actorFontSize': '13px',
     },
 }
 
