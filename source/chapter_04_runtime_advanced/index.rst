@@ -11,3 +11,4 @@
    05_cuda_context
    06_green_context
    07_cuda_graph_capture
+   08_cublas_internal
