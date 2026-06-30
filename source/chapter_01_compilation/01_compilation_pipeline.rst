@@ -552,5 +552,15 @@ nvlink 介入的触发
      - 4 KB
      - 14 KB (3.5×)
 
+--------------
+
+延伸阅读
+--------------
+
+- :doc:`02_intermediate_files` — 用 ``--keep`` 对照本节 11 步展开每种中间文件。
+- :doc:`05_sass_execution` — vector_add 的 SASS 在 SM 上如何执行；上文 WMMA 对比中的
+  HMMA 指令在该节延伸讨论。
+- :doc:`../chapter_02_toolchain/01_nvcc` — 本节流水线里的 execve 子进程，将在第 2 章逐个逆向。
+
 *分析基于 CUDA 13.1 / sm_89 (Ada Lovelace)
 架构，不同版本/架构的详细参数可能有所不同。*

@@ -6,6 +6,11 @@ cuBLAS 库调用分析：封闭源库的 kernel dispatch 路径
    应用 → ``libcublas.so`` → ``libcuda.so`` → 内核。本节通过 strace
    和运行时对比，揭示 cuBLAS 内部的 kernel 选择机制与 launch 模式。
 
+   :doc:`../chapter_03_runtime/03_kernel_launch` 拆解了 ``<<<>>>`` 到
+   ``ioctl(0x4e)`` 的用户 launch 路径。cuBLAS 最终同样经 ``cuLaunchKernel``
+   提交命令，但 kernel 来自闭源库内预编译的 cubin/PTX 变体，而非用户
+   fatbin 中的 ``vector_add``。
+
    环境: CUDA 13.1 / Driver 595.58.03 / sm_89 / RTX 4060 Laptop GPU
 
    测试程序: ``examples/cublas_demo.cu`` (1K×1K SGEMM)

@@ -5,6 +5,10 @@ UVM Page Fault 深入分析
    page fault 时透明迁移页面。本节通过计时、strace 和 nsys 分析
    五种 UVM 使用模式的时间开销与系统调用特征。
 
+   :doc:`02_memory_management` 已分析 ``cudaMalloc``、pinned memory 与
+   memory pool 的 ioctl 模式。UVM 在统一虚拟地址之上再叠加 **按需 page
+   migration**；本节观察缺页触发的额外驱动交互。
+
    环境: CUDA 13.1 / Driver 595.58.03 / sm_89 / RTX 4060 Laptop (512 MB 测试数据)
 
    测试程序: ``examples/uvm_pagefault_demo.cu`` (5 种场景)
