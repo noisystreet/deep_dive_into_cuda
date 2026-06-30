@@ -1,0 +1,39 @@
+flowchart TB
+    subgraph Sources["编译产物"]
+        STUB["cudafe1.stub.c<br/>callback + constructor"]
+        FATC["*.fatbin.c<br/>__fatDeviceText wrapper"]
+        LINK["link.stub + reg.c<br/>RDC 专用"]
+    end
+
+    subgraph Init["进程启动 .init_array"]
+        C1["TU constructor × N<br/>____cudaRegisterLinkedBinary"]
+        C0["__sti____cudaRegisterAll<br/>WPC 单 TU"]
+    end
+
+    subgraph Cudart["libcudart_static"]
+        RFB["__cudaRegisterFatBinary"]
+        RFN["__cudaRegisterFunction"]
+        RFE["__cudaRegisterFatBinaryEnd"]
+        HND["__cudaFatCubinHandle"]
+    end
+
+    subgraph Launch["main 之后 launch"]
+        STP["__device_stub__*"]
+        GK["__cudaGetKernel"]
+        LK["__cudaLaunchKernel → cuLaunchKernel"]
+    end
+
+    STUB --> C0
+    STUB --> C1
+    FATC --> RFB
+    LINK --> C1
+    C0 --> RFB
+    C1 -->|"凑齐 N 个 TU"| RFB
+    RFB --> HND
+    HND --> RFN
+    RFN --> RFE
+    HND --> STP
+    STP --> GK --> LK
+
+    style RFB fill:#c8e6c9
+    style LINK fill:#fff9c4

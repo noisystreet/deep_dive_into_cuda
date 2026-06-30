@@ -14,3 +14,4 @@ nvcc 工具链分析
    08_fatbinary
    09_tileir
    10_rdc
+   11_register_chain
