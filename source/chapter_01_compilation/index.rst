@@ -8,3 +8,4 @@
    02_intermediate_files
    03_fatbinary
    04_multiarch_fatbinary
+   05_sass_execution

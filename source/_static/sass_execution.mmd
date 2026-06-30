@@ -1,0 +1,23 @@
+flowchart TB
+    subgraph Launch["Launch 后 constant bank 已就绪"]
+        CB["c[0x0]: blockDim / n / 指针 a,b,c"]
+    end
+
+    subgraph Warp["Warp（32 线程，SIMT 同步取指）"]
+        S2R["S2R: 读 SR_CTAID / SR_TID"]
+        IMAD["IMAD: idx = blockIdx×blockDim + threadIdx"]
+        ISETP["ISETP: P0 = (idx >= n)"]
+        DIV{"@P0 谓词分歧"}
+        BODY["IMAD.WIDE + LDG.E + FADD + STG.E"]
+        EXIT["EXIT: 线程结束"]
+        TRAP["BRA 0x100 自旋兜底"]
+    end
+
+    CB --> S2R --> IMAD --> ISETP --> DIV
+    DIV -->|"P0=1 越界"| EXIT
+    DIV -->|"P0=0 有效"| BODY --> EXIT
+    DIV -.->|"无线程命中"| TRAP
+
+    style DIV fill:#fff9c4
+    style BODY fill:#c8e6c9
+    style TRAP fill:#ffcdd2
