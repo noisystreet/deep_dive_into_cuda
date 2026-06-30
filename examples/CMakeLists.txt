@@ -15,3 +15,8 @@ add_executable(vector_add vector_add.cu)
 add_executable(wmma_matmul wmma_matmul.cu)
 add_executable(graph_demo graph_demo.cu)
 add_executable(streams_demo streams_demo.cu)
+
+add_executable(rdc_vector_add
+    rdc/device_utils.cu
+    rdc/vector_add_rdc.cu)
+set_target_properties(rdc_vector_add PROPERTIES CUDA_SEPARABLE_COMPILATION ON)

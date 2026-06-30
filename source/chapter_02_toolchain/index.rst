@@ -13,3 +13,4 @@ nvcc 工具链分析
    07_host_link
    08_fatbinary
    09_tileir
+   10_rdc
