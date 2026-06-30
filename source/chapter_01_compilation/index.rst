@@ -9,3 +9,4 @@
    03_fatbinary
    04_multiarch_fatbinary
    05_sass_execution
+   06_ptx_jit

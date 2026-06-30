@@ -1,0 +1,37 @@
+flowchart TB
+    subgraph Offline["离线 nvcc"]
+        CICC["cicc → PTX"]
+        PTXAS["ptxas → cubin<br/>（可选）"]
+        FAT["fatbinary 打包"]
+    end
+
+    subgraph Fatbin["fat binary image"]
+        ELF["kind=elf, sm=XX<br/>预编译 SASS"]
+        PTX["kind=ptx, sm=XX<br/>虚拟 ISA"]
+    end
+
+    subgraph Runtime["运行时 __cudaRegisterFatBinary"]
+        MATCH{"精确 sm cubin<br/>匹配？"}
+        LOAD["直接加载 cubin<br/>零 JIT"]
+        JIT["libcuda 内 PTX→SASS JIT"]
+        CACHE["~/.nv/ComputeCache"]
+        FAIL["加载失败"]
+    end
+
+    CICC --> PTXAS
+    PTXAS --> FAT
+    CICC --> FAT
+    FAT --> ELF
+    FAT --> PTX
+
+    ELF --> MATCH
+    PTX --> MATCH
+    MATCH -->|是| LOAD
+    MATCH -->|否，有 PTX| JIT
+    MATCH -->|否，无 PTX| FAIL
+    JIT --> CACHE
+    JIT --> LOAD
+
+    style JIT fill:#fff9c4
+    style LOAD fill:#c8e6c9
+    style FAIL fill:#ffcdd2
