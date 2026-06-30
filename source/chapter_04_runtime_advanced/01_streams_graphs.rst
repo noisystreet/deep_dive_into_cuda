@@ -215,6 +215,8 @@ ioctl 统计摘要
 
 三个程序的核心 kernel launch 次数不同（vector_add ×1, streams_demo ×5, graph_demo ×6），但 ``0x4e`` 次数相近（25），这是因为大部分 ``0x4e`` 用于 kernel launch 之外的 DMA 控制（memcpy 内部）。
 
+Graph 捕获的逐步 strace 分析见下一节 :doc:`07_cuda_graph_capture`。
+
 关键发现
 -----------
 

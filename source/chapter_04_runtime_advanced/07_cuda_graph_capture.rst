@@ -13,6 +13,15 @@ CUDA Graph 捕获序列：从 capture 到 instantiate 的底层路径
 
 --------------
 
+与前节的关系
+----------------
+
+:doc:`01_streams_graphs` 从 Stream/Event 与 Graph **概念** 出发，对比
+``streams_demo`` / ``graph_demo`` 的 ioctl 分布。本节在同一主题下 **逐步
+追踪** Graph 捕获 → 实例化 → 重放的 strace 序列，建议两节连续阅读。
+
+--------------
+
 为什么需要 CUDA Graph？
 --------------------------
 

@@ -17,9 +17,10 @@
 |------|------|
 | `source/preface/index.rst` | 前言：全景架构总览 |
 | `source/index.rst` | Sphinx 根文档（toctree 入口） |
-| `source/chapter_01_compilation/` | 编译过程深度分析（3 篇：编译流水线、中间产物、Fat Binary 结构） |
-| `source/chapter_02_toolchain/` | nvcc 工具链分析（5 篇：nvcc / cudafe++ / cicc / ptxas / nvlink） |
-| `source/chapter_03_runtime/` | 运行时与驱动（2 篇：GPU 驱动接口、libcudart 分析） |
+| `source/chapter_01_compilation/` | 编译过程深度分析（6 篇：流水线、中间产物、Fat Binary、多架构、SASS 执行、PTX JIT） |
+| `source/chapter_02_toolchain/` | nvcc 工具链分析（11 篇：nvcc / cudafe / cicc / ptxas / libdevice / nvlink / fatbinary / host_link / tileir / rdc / 注册链） |
+| `source/chapter_03_runtime/` | 运行时与驱动（4 篇：驱动接口、libcudart、kernel launch、同步） |
+| `source/chapter_04_runtime_advanced/` | 进阶运行时专题（8 篇：Stream/Graph、Graph 捕获、内存、module 加载、UVM、Context、Green Context、cuBLAS） |
 | `source/appendix/` | 附录（资源推荐、术语表） |
 | `source/conf.py` | Sphinx 构建配置（sphinx_rtd_theme） |
 | `source/_static/*.mmd` | Mermaid 示意图（全景图、流水线、Fat Binary 层级、IOCTL 饼图、调用链） |
@@ -80,22 +81,28 @@
 
 ## 写作路线图
 
-已完成全部 11 篇分析文档的编写：
+全书共 **29 篇** 正文 + 前言 + 附录 2 篇。推荐顺序：第 1→2→3→4 章；第 2 章
+11 注册链是第 3 章 launch 的前置；第 4 章 Graph 捕获紧接 Streams/Graphs 概念
+篇阅读。
 
 1. **前言** — 全景架构总览（Mermaid 图：5 层全链路）
-2. **第 1 章：编译过程深度分析**
-   - 1.1 编译流水线详解（Mermaid 图：双路径 11 步）
-   - 1.2 编译中间产物分析（源码 489B → 预处理 1.3MB 的 2700 倍膨胀）
-   - 1.3 Fat Binary 结构分析（Mermaid 图：容器→ELF→SASS）
-3. **第 2 章：nvcc 工具链分析**
-   - 2.1 nvcc 分析（Driver Compiler，33 次 execve）
-   - 2.2 cudafe++ 分析（基于 EDG C++ 6.7）
-   - 2.3 cicc 分析（基于 LLVM 7.0.1 / NVVM，77 MB）
-   - 2.4 ptxas 分析（两阶段架构：Backend + Finalizer）
-   - 2.5 nvlink 分析（dlopen 加载 libnvvm / libtileiras）
-4. **第 3 章：运行时与驱动**
-   - 3.1 GPU 驱动接口分析（strace 追踪，Mermaid 图：IOCTL 分布 + 调用链）
-   - 3.2 libcudart 分析（429 个 API，薄包装层）
+2. **第 1 章：编译过程深度分析**（6 篇）
+   - 1.1 编译流水线详解
+   - 1.2 编译中间产物分析
+   - 1.3 Fat Binary 结构分析
+   - 1.4 多架构 Fat Binary
+   - 1.5 SASS 执行分析
+   - 1.6 PTX JIT 回退
+3. **第 2 章：nvcc 工具链分析**（11 篇，toctree 顺序即编译流水线顺序）
+   - 2.1 nvcc → 2.2 cudafe++ → 2.3 cicc → 2.4 ptxas → 2.6 libdevice
+   - 2.5 nvlink → 2.8 fatbinary 工具 → 2.7 g++ host 链接
+   - 2.9 TileIR → 2.10 RDC → 2.11 ``__cudaRegister*`` 注册链
+4. **第 3 章：运行时与驱动**（4 篇）
+   - 3.1 GPU 驱动接口 → 3.2 libcudart → 3.3 kernel launch → 3.4 同步
+5. **第 4 章：进阶运行时专题**（8 篇）
+   - Streams/Graphs 概念 → Graph 捕获 → 内存管理 → module 加载
+   - UVM 缺页 → Context → Green Context → cuBLAS 内部分析
+6. **附录** — 资源推荐、术语表
 
 ## 构建方法
 
