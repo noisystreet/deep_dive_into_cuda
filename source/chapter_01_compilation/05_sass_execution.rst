@@ -12,6 +12,11 @@ SASS 执行分析
 
    环境: CUDA 13.1 / sm_89 (Ada Lovelace) / Linux x86-64
 
+   **阅读提示**：本节偏硬件执行语义，位于第 1 章末以便与编译产物衔接。
+   若尚未阅读 :doc:`../chapter_02_toolchain/04_ptxas` 与
+   :doc:`../chapter_03_runtime/03_kernel_launch`，可先通读第 2–3 章后再回头
+   对照 constant bank 与谓词分歧。
+
 .. admonition:: 你知道吗？
 
    GPU 没有「每个线程一个 PC」的传统多线程模型。一个 warp 的 32 个线程
