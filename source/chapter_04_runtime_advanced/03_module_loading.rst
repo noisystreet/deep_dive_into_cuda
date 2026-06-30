@@ -5,6 +5,9 @@ cuModule 动态加载：Driver API 的运行时编译路径
    提供了完全不同的路径：在运行时直接从内存加载 cubin 或 PTX，无需
    调用 nvcc 子进程。本节对比三种 kernel 加载方式的底层行为差异。
 
+   静态 fatbin 的 PTX JIT 回退见 :doc:`../chapter_01_compilation/06_ptx_jit`；
+   本节聚焦 **Driver API 显式加载** 的另一条入口。
+
    环境: CUDA 13.1 / Driver 595.58.03 / sm_89 (Ada Lovelace) / Linux x86-64
 
    测试程序: ``examples/module_demo.cu`` (三种加载路径)

@@ -6,6 +6,11 @@ GPU 驱动接口分析：从 CUDA API 到内核驱动
 
    环境: CUDA 13.1 / Driver 595.58.03 / Linux x86_64
 
+   :doc:`../chapter_02_toolchain/11_register_chain` 说明在 ``main`` 执行前，
+   constructor 已通过 ``__cudaRegisterFatBinary`` 把 ``.nv_fatbin`` 注册进
+   Runtime。本章 **从这一刻之后** 的视角出发：用户调用 ``cudaMalloc``、
+   ``<<<>>>`` 时，strace 能观察到什么？
+
 --------------
 
 运行时软件栈概览

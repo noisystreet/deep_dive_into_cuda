@@ -5,6 +5,10 @@ NVCC 编译中间产物分析
 
    环境: CUDA 13.1 / sm_89 (Ada Lovelace)
 
+   :doc:`01_compilation_pipeline` 从 ``nvcc --verbose`` 概括了 11 步编译链。
+   本节启用 ``--keep``，把日志中的抽象步骤落实为磁盘上的 ``.ptx``、
+   ``.cubin``、``.fatbin.c`` 等可分析文件。
+
 .. admonition:: 你知道吗？
 
    当 CUDA kernel 出现"未定义行为"级别的错误（如意外写坏内存、PTX

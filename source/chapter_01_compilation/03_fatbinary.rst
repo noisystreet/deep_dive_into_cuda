@@ -6,6 +6,10 @@ Fat Binary 结构分析
 
    环境: CUDA 13.1 / sm_89 (Ada Lovelace)
 
+   :doc:`02_intermediate_files` 已列出 ``vector_add.fatbin`` 与 ``.cubin`` 等
+   中间产物。本节用 ``readelf`` / ``cuobjdump`` 解析 **容器与 ELF 字节布局**；
+   fatbinary CLI 工具专篇见 :doc:`../chapter_02_toolchain/08_fatbinary`。
+
 .. admonition:: 你知道吗？
 
    很多人都认为 ``.cubin`` 文件是 NVIDIA 专有的二进制格式，但实际上

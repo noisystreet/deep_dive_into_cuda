@@ -4,6 +4,11 @@ NVCC 分析：工具链架构
    对 nvcc 可执行文件进行分析，揭示其作为”驱动编译器 (Driver
    Compiler)“的内部架构
 
+   :doc:`../chapter_01_compilation/01_compilation_pipeline` 已从日志角度画出
+   编译地图。本章从 **nvcc 二进制本身** 入手，按 execve 顺序逐个拆解
+   cudafe++、cicc、ptxas 等子工具；读完本章末尾 :doc:`11_register_chain`
+   后，再进入第 3 章看已注册 fatbin 如何被 launch。
+
 .. admonition:: 你知道吗？
 
    NVCC 的名字源自 NVIDIA Compiler Collection，与 GCC (GNU Compiler
