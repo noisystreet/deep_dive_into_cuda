@@ -27,17 +27,21 @@ CICC 分析：CUDA Device 编译器探秘
 依赖库
 ~~~~~~~~~~
 
+实测 ``readelf -d`` 得到的 ``DT_NEEDED`` 只有 5 个系统库：
+
 ::
 
-   linux-vdso.so.1
    libpthread.so.0     ← 线程（编译耗时较长，可能使用线程池）
    librt.so.1          ← 实时时钟
-   libdl.so.2          ← 动态加载（可能用于加载 libnvvm.so）
+   libdl.so.2          ← 动态加载
    libm.so.6           ← 数学库（浮点常量折叠需要）
    libc.so.6           ← C 标准库
 
-cicc 的依赖非常轻量，它实际的核心功能依赖通过 ``dlopen``
-加载额外模块（见后文）。
+依赖之所以如此轻量，是因为 **cicc 把编译核心全部静态编入了自身**：
+它的 ``.text`` 段达 58.7 MB（占文件 72.8%），静态调用图中 96.2%
+（803,475 处 ``call`` 里的 773,019 处）是内部调用。也就是说，cicc 不是
+一个薄包装器，而是一台自带完整前端与优化器的编译器（证据见
+:ref:`cicc-callgraph`）。
 
 版本标识
 ~~~~~~~~~~~~
@@ -49,19 +53,113 @@ cicc 的依赖非常轻量，它实际的核心功能依赖通过 ``dlopen``
    Cuda compilation tools, release 13.1, V13.1.115
    Based on NVVM 7.0.1                   ← NVVM IR 版本
 
+.. _cicc-callgraph:
+
+静态调用图（实测）
+~~~~~~~~~~~~~~~~~~~~~~
+
+将 ``.text`` 段完整反汇编，逐条统计 ``call`` 指令及其目标，得到 cicc
+的真实调用图规模（``scripts/analyze_binaries.py calls --target cicc``）：
+
+::
+
+   直接 call 指令总数:   803,475
+   被调用的目标函数数:    62,890
+   PLT 跳转桩数量:          246
+   内部分支 (目标在 .text 内):  773,019   (96.2%)
+   外部分支 (经 PLT 到动态库):    30,456   ( 3.8%)
+
+被调用次数最多的内部函数：
+
+::
+
+   0x149f700   34,081 次
+   0x239ffb0   33,707 次
+   0x3825cd0   14,478 次
+   0x23a0310   12,830 次
+   0xdfa6d0    12,193 次
+   0xe234c0    11,535 次
+
+被调用次数最多的外部导入函数：
+
+::
+
+   memcpy        8,493 次
+   memmove       4,712 次
+   memcmp        3,686 次
+   __cxa_atexit  3,433 次
+   strlen        2,524 次
+   memset        2,077 次
+
+**解读**: 外部调用只占 3.8%，且几乎全部是 libc
+的无状态内存/字符串原语。这从调用图层面证实：cicc
+是一台 **自包含**\ 的编译器——它的 LLVM 前端、优化器、NVPTX
+后端都编在同一个可执行文件里，而非通过共享库间接调用。
+
 --------------
 
-NVVM 三层架构
-----------------
+编译核心与 libnvvm
+----------------------
 
-cicc 内部基于 **NVVM (NVIDIA Virtual Machine)** 框架，分为三层，见 :numref:`fig-cicc-architecture`。
+cicc 内嵌了完整的 NVVM (NVIDIA Virtual Machine) 编译框架——前端、优化器、
+NVPTX 后端都在同一个可执行文件里。与此同时，CUDA 工具包又 **另外独立分发**\ 了一份
+等价的 NVVM 共享库 ``libnvvm.so``\ ，供外部工具（如 nvlink 做 LTO）以 C API
+方式复用编译能力。二者的关系是 **平行分发**\ ，而非相互调用，见
+:numref:`fig-cicc-architecture` 及后续实测。
 
 .. mermaid:: ../_static/cicc_architecture.mmd
    :name: fig-cicc-architecture
-   :caption: cicc 的 NVVM 三层架构
+   :caption: cicc 与 libnvvm.so 的平行分发关系
 
-libnvvm.so — 编译核心库
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
+运行时加载行为（实测）
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+"cicc 通过 ``dlopen`` 加载 libnvvm.so" 是一个直觉上的推测，但实测否定了它。
+
+用 strace 跟踪一次真实编译（``nvcc -cubin examples/vector_add.cu`` 所触发的
+cicc 进程）的全部 ``openat`` 调用：
+
+::
+
+   cicc 进程打开的全部 .so（去重）:
+     libc.so.6
+     libdl.so.2
+     libm.so.6
+     libpthread.so.0
+     librt.so.1
+
+   出现的 "libnvvm" 次数: 0
+
+进一步用 capstone 扫描 cicc 的全部 ``.text``\ ，定位所有对 ``dlopen`` /
+``dlsym`` 的调用点，并用 RIP 相对寻址回推其字符串参数：
+
+::
+
+   调用点              目标              参数（字符串）
+   .text:0x5e155a      dlopen@plt        "libTileIRCompiler_shared.so" (RTLD_LAZY)
+   .text:0x5e1575      dlsym@plt         "cudacc_back_end"
+   .text:0x14b3992     dlsym@plt         RTLD_DEFAULT=-1
+   .text:0x14b39f2     dlsym@plt         "pthread_create"
+
+整个二进制中都找不到 ``libnvvm.so`` 这个字符串——扫描全部 ``lib*.so*``
+形态的字符串，只有：
+
+::
+
+   libTileIRCompiler_shared.so
+   libc.so.6
+   libdl.so.2
+   libm.so.6
+   libpthread.so.0
+   librt.so.1
+
+**结论**: cicc 的 dlopen/dlsym 只服务于 **可选插件**——唯一内建目标是
+``libTileIRCompiler_shared.so`` 导出的 ``cudacc_back_end`` 入口；唯一的
+dlsym 探测是 ``pthread_create``\ （线程能力探测）。cicc 无需任何运行时加载
+即可完成 CUDA C++ → PTX 的编译。
+
+libnvvm.so — 独立分发的 NVVM C API
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ::
 
@@ -133,11 +231,33 @@ triple 是 ``nvptx64-nvidia-gpulibs`` 而非
 
 --------------
 
-LLVM Pass Pipeline (基于字符串分析)
---------------------------------------
+LLVM Pass Pipeline（字符串 + 交叉引用分析）
+----------------------------------------------
 
-通过 strings 提取的 Pass 名称，cicc 内部集成了所有 LLVM 标准优化
-Pass，数量在 100+ 级别。以下是按类别分类的关键 Pass：
+cicc 内部集成了全部 LLVM 标准优化 Pass，数量在 100+ 级别。这些名称可以直接
+从 ``.rodata`` 中提取。但"字符串存在"并不等于"代码在用"。下面先用
+**交叉引用（XREF）**\ 证明这些字符串确实被代码引用——即它们不是碰巧出现的注释，
+而是真正注册进 Pass 注册表的符号。
+
+XREF 证据
+~~~~~~~~~~~~~
+
+用 capstone 扫描全部 ``.text``\ ，把每条指令的 RIP 相对寻址目标反解为绝对
+地址，再与 ``.rodata`` 中的字符串地址求交。以两个关键字符串为例：
+
+::
+
+   字符串 "__nvvm_reflect"      位于 .rodata:0x41da6df
+   被 .text 中 3 处指令引用:    0x4bf393, 0x1e8d4f4, 0x2ef3a5e
+
+   字符串 "nvvmCompileProgram"  位于 .rodata:0x4546f3c
+   被 .text 中 2 处指令引用:    0x145ba02, 0x23f6497
+
+反汇编 0x145ba02 处可确认：该字符串是被构造为 ``std::string`` 参数
+（``lea`` 取首尾指针 → 构造 ``std::string``），而不是直接当作 dlsym 的符号名
+——这与"cicc 不加载 libnvvm.so"的结论互相印证。
+
+以下 Pass 名称均通过同样的 XREF 流程验证其被代码引用：
 
 Module Pass
 ~~~~~~~~~~~~~~~
@@ -495,25 +615,34 @@ cicc 是一个 **基于 LLVM 7.0.1 / NVVM 的 CUDA→PTX
 +-----------------+-----------------+-----------------+-----------------+
 | 组件            | 提供者          | 大小            | 说明            |
 +=================+=================+=================+=================+
-| cicc 包装器     | NVIDIA          | ~16 MB          | UI、            |
-|                 |                 |                 | 命令行、libnvvm |
-|                 |                 |                 | API 封装        |
+| cicc            | NVIDIA          | 77 MB           | 自包含的 LLVM   |
+|                 |                 |                 | 前端 + 优化器   |
+|                 |                 |                 | + NVPTX 后端    |
 +-----------------+-----------------+-----------------+-----------------+
-| libnvvm.so      | NVIDIA (基于    | 61 MB           | LLVM + NVVM     |
-|                 | LLVM)           |                 | Pass Pipeline + |
-|                 |                 |                 | NVPTX 后端      |
+| libnvvm.so      | NVIDIA (基于    | 61 MB           | 平行分发的      |
+|                 | LLVM)           |                 | NVVM C API      |
+|                 |                 |                 | （17 个符号）   |
 +-----------------+-----------------+-----------------+-----------------+
 | libdevice.10.bc | NVIDIA          | 454 KB          | 内置函数 LLVM   |
 |                 |                 |                 | IR bitcode      |
 +-----------------+-----------------+-----------------+-----------------+
+
+.. note::
+
+   这里修正了一个常见误解。早期分析曾把 cicc 描述为 "~16 MB 的包装器，
+   运行时 dlopen 加载 libnvvm.so"。但实测表明：cicc 的 ``.text`` 段本身就有
+   58.7 MB\ （占文件 72.8%），静态调用图中 96.2% 是内部调用，且运行期打开的
+   共享库中 **不包含 libnvvm.so**\ 。正确的图景是：cicc 自带完整编译核心，
+   libnvvm.so 是 NVIDIA 为外部复用者 **平行分发**\ 的一份等价 NVVM C API。
 
 cicc 的独特之处
 ~~~~~~~~~~~~~~~~~~~
 
 1. **LLVM-based but proprietary**: 基于 LLVM 7.0.1，但加入了 NVIDIA
    专有的 NVVM Pass 和 NVPTX 后端
-2. **分层编译**: 通过 libnvvm.so 提供 C API，允许其他工具（如
-   nvlink）重用编译能力
+2. **自带编译核心**: 编译前端、优化器、NVPTX 后端全部编入自身可执行文件
+   （``.text`` 段 58.7 MB），运行期不加载 libnvvm.so；libnvvm.so 是 NVIDIA
+   **平行分发**、供外部工具（如 nvlink 做 LTO）复用的 NVVM C API
 3. **内置函数 as LLVM IR**: libdevice 以 LLVM bitcode
    形式分发给编译器，而非运行时链接
 4. **Reflect 机制**: 通过 ``__nvvm_reflect``

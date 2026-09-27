@@ -37,7 +37,53 @@ NVLINK 分析：CUDA Device 链接器
 
 **关键发现**: nvlink 通过 ``dlopen`` 动态加载关键功能库，包括： -
 ``libnvvm.so`` — LTO 模式下调用 NVVM 编译器进行链接时优化 -
-``libtileiras.so`` — TileIR JIT 编译（91 MB 的大库）
+``libnvidia-tileiras.so`` — TileIR JIT 编译（Driver 590.56 附带的大库）
+
+符号与动态加载线索（实测）
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+上述 "dlopen 加载 libnvvm.so / libnvidia-tileiras.so" 的论断，可以从
+nvlink 的动态符号表与内嵌字符串两个层面得到印证：
+
+::
+
+   文件大小:    41,776,688 字节 (39.8 MiB)
+   ELF 类型:    ET_DYN (PIE，参与 ASLR)
+   strip 状态:  已剥离（无 .symtab，仅剩 .dynsym）
+   .text 段:    28,275,874 字节 @0x1b60c0（占文件 67.7%）
+
+   动态符号表 (.dynsym):  共 167 个
+     导入 (UND):  160
+     导出:          6
+
+   导入函数中与动态加载相关者:
+     dlopen
+     dlsym
+     dlclose
+
+再扫描 nvlink 内嵌的库名与选项字符串，可看到它的实际 dlopen 目标：
+
+::
+
+   libnvvm.so                                 ← LTO 时加载
+   libnvidia-tileiras.so.590.56               ← TileIR JIT 时加载（带 Driver 版本号）
+   nvvmpath                                   ← 选项 "Path to libnvvm library."
+   Can't JIT TileIR without libtileiras       ← 缺少 TileIR 库时的报错
+   __nvvmHandle / nvvmCompileProgram          ← 通过 dlsym 解析的 NVVM C API
+   nvTileIRCompileProgram                     ← 通过 dlsym 解析的 TileIR C API
+
+**发现**: nvlink 同时导入了 ``dlopen`` / ``dlsym`` / ``dlclose``——一整套
+运行时加载原语，且二进制中保留着 ``libnvvm.so`` 与
+``libnvidia-tileiras.so.590.56`` 的库名。链接器在编译期无从知道用户会不会
+启用 LTO（需要 libnvvm.so）或 TileIR（需要 tileiras 库），因此采用"按需
+dlopen"的设计以对这些可选组件保持 **弱耦合**：不启用就不加载。注意 TileIR
+库的名字带 Driver 版本号（``.590.56``），说明它的加载路径与已安装的驱动
+版本绑定。
+
+**三家对照**: 三个二进制对动态加载的依赖程度截然不同——nvlink 导入完整的
+``dlopen``/``dlsym``/``dlclose`` 三元组并内嵌可选库名；cicc 也导入三者，
+但唯一的实际加载目标是可选插件 ``libTileIRCompiler_shared.so``（详见
+第 2.3 节）；ptxas 则只导入 ``dlclose``，运行期完全不需要外部模块。
 
 与 GNU ld 的宏观对比
 ~~~~~~~~~~~~~~~~~~~~~~~~
