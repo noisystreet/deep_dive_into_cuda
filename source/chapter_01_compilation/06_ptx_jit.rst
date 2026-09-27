@@ -10,7 +10,7 @@ PTX JIT 回退
 
    环境: CUDA 13.1 / Driver 595.58.03 / sm_89 (Ada Lovelace) / Linux x86-64
 
-.. admonition:: 你知道吗？
+.. admonition:: 小知识
 
    PTX JIT **不会** ``execve("ptxas", ...)``。与 nvcc 离线链路不同，驱动在
    ``libcuda.so`` 进程内完成 PTX→SASS，但首次 JIT 仍会通过 ioctl 分配 GPU

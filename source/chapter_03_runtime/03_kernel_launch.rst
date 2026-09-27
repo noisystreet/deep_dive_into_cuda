@@ -8,7 +8,7 @@ Kernel Launch 深度追踪
 
    示例: ``examples/vector_add.cu`` 第 40 行
 
-.. admonition:: 你知道吗？
+.. admonition:: 小知识
 
    你是否想过 GPU kernel 的 launch 延迟有多大？从 CPU 调用
    ``vec_add<<<>>>`` 到 GPU 第一条 SASS 指令开始执行，大约需要

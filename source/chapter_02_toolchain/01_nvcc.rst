@@ -9,7 +9,7 @@ NVCC 分析：工具链架构
    cudafe++、cicc、ptxas 等子工具；读完本章末尾 :doc:`11_register_chain`
    后，再进入第 3 章看已注册 fatbin 如何被 launch。
 
-.. admonition:: 你知道吗？
+.. admonition:: 小知识
 
    NVCC 的名字源自 NVIDIA Compiler Collection，与 GCC (GNU Compiler
    Collection) 的命名如出一辙。有趣的是，NVCC 本身并不真正"编译"

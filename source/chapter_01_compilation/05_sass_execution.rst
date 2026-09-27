@@ -17,7 +17,7 @@ SASS 执行分析
    :doc:`../chapter_03_runtime/03_kernel_launch`，可先通读第 2–3 章后再回头
    对照 constant bank 与谓词分歧。
 
-.. admonition:: 你知道吗？
+.. admonition:: 小知识
 
    GPU 没有「每个线程一个 PC」的传统多线程模型。一个 warp 的 32 个线程
    **共享同一条指令流**，靠 **谓词寄存器** 决定哪些 lane 真正写回结果。

@@ -9,7 +9,7 @@ NVCC 编译中间产物分析
    本节启用 ``--keep``，把日志中的抽象步骤落实为磁盘上的 ``.ptx``、
    ``.cubin``、``.fatbin.c`` 等可分析文件。
 
-.. admonition:: 你知道吗？
+.. admonition:: 小知识
 
    当 CUDA kernel 出现"未定义行为"级别的错误（如意外写坏内存、PTX
    JIT 失败），最有效的定位方式是 ``nvcc --keep``。保留的 ``.ptx``

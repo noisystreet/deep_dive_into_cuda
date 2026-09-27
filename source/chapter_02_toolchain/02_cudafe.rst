@@ -6,7 +6,7 @@ CUDAFE++ 分析：CUDA 语言前端
 
    分析基于 CUDA 13.1 (build 37061995)
 
-.. admonition:: 你知道吗？
+.. admonition:: 小知识
 
    为何 NVIDIA 选择 EDG 而非 Clang 作为 CUDA 的 C++ 前端？这其实
    是一个**历史遗留问题**。CUDA 1.0 (2007) 发布时，LLVM/Clang 还

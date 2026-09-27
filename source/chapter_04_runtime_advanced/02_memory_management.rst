@@ -10,7 +10,7 @@ CUDA 内存管理深度分析
 
    测试程序: ``examples/memory_demo.cu`` (覆盖 6 种分配场景)
 
-.. admonition:: 你知道吗？
+.. admonition:: 小知识
 
    CUDA 中有一个常用的性能优化技巧你可能不知道：
    ``cudaHostAlloc`` 分配的 pinned memory 不仅对 GPU→CPU 传输

@@ -7,7 +7,7 @@
 
    环境: CUDA 13.1 / sm_89 (Ada Lovelace) / Linux x86-64
 
-.. admonition:: 你知道吗？
+.. admonition:: 小知识
 
    为什么需要多架构 fat binary？一个直接的场景是游戏行业：Steam 上
    的 CUDA 应用必须同时支持 GTX 1060 (sm_61) 到 RTX 4090 (sm_89)

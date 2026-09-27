@@ -10,7 +10,7 @@ Fat Binary 结构分析
    中间产物。本节用 ``readelf`` / ``cuobjdump`` 解析 **容器与 ELF 字节布局**；
    fatbinary CLI 工具专篇见 :doc:`../chapter_02_toolchain/08_fatbinary`。
 
-.. admonition:: 你知道吗？
+.. admonition:: 小知识
 
    很多人都认为 ``.cubin`` 文件是 NVIDIA 专有的二进制格式，但实际上
    cubin 是**标准 ELF 文件**——你甚至可以用 ``readelf -a`` 解析它。

@@ -6,7 +6,7 @@
 
    环境: CUDA 13.1 / Driver 595.58.03 / sm_89 (Ada Lovelace) / Linux x86-64
 
-.. admonition:: 你知道吗？
+.. admonition:: 小知识
 
    NVIDIA 的 CPU-GPU 同步模型有一个鲜为人知的事实：
    ``cudaDeviceSynchronize`` 不是发送一个新命令，而是等待一个

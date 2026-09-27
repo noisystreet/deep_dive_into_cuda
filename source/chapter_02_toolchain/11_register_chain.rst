@@ -13,7 +13,7 @@ __cudaRegister* 注册链
 
    环境: CUDA 13.1 / sm_89 / Linux x86-64
 
-.. admonition:: 你知道吗？
+.. admonition:: 小知识
 
    ``__cudaRegisterBinary`` 在源码里看起来像函数调用，实际上是 **宏**——预处理器
    把它展开为 ``__cudaRegisterFatBinary`` + callback + ``__cudaRegisterFatBinaryEnd``

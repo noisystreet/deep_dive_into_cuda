@@ -10,7 +10,7 @@ Streams 与 CUDA Graphs 深度分析
 
    测试程序: ``examples/streams_demo.cu``, ``examples/graph_demo.cu``
 
-.. admonition:: 你知道吗？
+.. admonition:: 小知识
 
    你可能在 PyTorch/TensorFlow 中使用过 CUDA Streams 而不自知——
    每次调用 ``torch.cuda.synchronize()`` 背后就是一个 stream 同步

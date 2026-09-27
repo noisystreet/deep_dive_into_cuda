@@ -11,7 +11,7 @@ Green Context：GPU 资源分区与轻量级上下文
 
    测试程序: ``examples/greenctx_demo.cu``
 
-.. admonition:: 你知道吗？
+.. admonition:: 小知识
 
    Green Context 的"green"这个名字有一个有趣的来源：它不是指
    环保，而是指"**轻量级、可快速创建**"的上下文，就像

@@ -6,7 +6,7 @@ LIBCUDART 分析：CUDA Runtime API 库
 
    分析基于 CUDA 13.1 (build 37061995)
 
-.. admonition:: 你知道吗？
+.. admonition:: 小知识
 
    CUDA Runtime API (libcudart) 和 Driver API (libcuda) 的关系常被
    误解。简单说：**Runtime API 是在 Driver API 之上的一层包装**。

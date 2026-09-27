@@ -16,7 +16,7 @@ NVCC (NVIDIA CUDA Compiler) 将 ``.cu``
 **Device 代码**\ （运行在 GPU
 上），并最终将它们链接到同一个可执行文件中。
 
-.. admonition:: 你知道吗？
+.. admonition:: 小知识
 
    CUDA 选择将 Host 和 Device 代码分离编译，而非混合编译，是一个有意
    为之的设计决策。2007 年 Fermi 架构发布时，CUDA 的编译流程沿用了

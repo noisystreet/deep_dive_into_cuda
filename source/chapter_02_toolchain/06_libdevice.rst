@@ -10,7 +10,7 @@ libnvvm / libdevice 深度分析
 
    环境: Linux x86-64 / sm_89
 
-.. admonition:: 你知道吗？
+.. admonition:: 小知识
 
    libdevice 提供的数学函数（``sinf``、``expf``、``sqrtf`` 等）
    执行速度因 GPU 架构而异。以 ``sinf`` 为例：它不调用 CPU 的
