@@ -26,24 +26,33 @@ mermaid_init_config = {
     'theme': 'neutral',
     'themeVariables': {
         'fontSize': '14px',
-        'primaryTextColor': '#404040',
+        # 文字统一为近黑色，避免 neutral 主题默认灰字不醒目、且各图类型深浅不一
+        'primaryTextColor': '#1a1a1a',
+        'secondaryTextColor': '#1a1a1a',
+        'tertiaryTextColor': '#1a1a1a',
+        'textColor': '#1a1a1a',
         'secondaryColor': '#f5f5f5',
         'tertiaryColor': '#fff',
-        'lineColor': '#666',
+        'lineColor': '#555',
         'fontFamily': '"Lato", "Noto Sans SC", "Source Han Sans SC", "PingFang SC", sans-serif',
     },
+    # useMaxWidth=False：让 Mermaid 输出图表的自然像素尺寸，
+    # 小图不被拉伸放大；超大图再由 custom.css 的 max-width 限制到容器内自适应缩放。
     'flowchart': {
-        'useMaxWidth': True,
+        'useMaxWidth': False,
         'htmlLabels': True,
         'nodeSpacing': 30,
         'rankSpacing': 35,
         'padding': 6,
     },
     'sequence': {
-        'useMaxWidth': True,
+        'useMaxWidth': False,
         'messageFontSize': '13px',
         'noteFontSize': '13px',
         'actorFontSize': '13px',
+    },
+    'pie': {
+        'useMaxWidth': False,
     },
 }
 

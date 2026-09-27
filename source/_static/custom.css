@@ -34,25 +34,29 @@ div[class*="highlight"] pre {
     margin-bottom: 4px;
 }
 
-/* Mermaid 图：自适应容器宽度，禁止横向溢出 */
-.mermaid-container,
-pre.mermaid {
+/* Mermaid 图：保持自然尺寸，仅超过容器宽度时等比缩小 */
+.rst-content .mermaid-container,
+.rst-content pre.mermaid {
     overflow-x: auto;
     margin: 1.25em 0;
     text-align: center;
 }
 
-.mermaid-container > pre,
-pre.mermaid {
+.rst-content .mermaid-container > pre,
+.rst-content pre.mermaid {
     width: 100%;
     max-width: 100%;
     padding: 0;
 }
 
-.mermaid-container svg,
-pre.mermaid svg {
+/* 覆盖 sphinxcontrib-mermaid 注入的
+   pre.mermaid > svg { width: 100%; max-width: 100% !important }，
+   否则小图会被拉伸填满 960px 容器。高特异性确保生效。 */
+.rst-content .mermaid-container > pre > svg,
+.rst-content pre.mermaid > svg {
     display: block;
     margin: 0 auto;
-    max-width: 100%;
+    width: auto;
     height: auto;
+    max-width: 100%;
 }
