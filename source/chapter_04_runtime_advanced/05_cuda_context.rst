@@ -28,6 +28,10 @@ Context 是 GPU 的 CPU 侧 "进程"——每个 context 对应一个独立的 G
 - 已加载的模块（``cuModuleLoad`` 的 cubin）
 - Stream 和 event 映射
 
+Context 从初始化到销毁的完整生命周期：
+
+.. mermaid:: ../_static/context_lifecycle.mmd
+
 --------------
 
 cuInit：Driver 初始化
@@ -201,3 +205,5 @@ Driver API 调用根据这个指针选择对应的 GPU 虚拟地址空间。
    （UVM）。每种节点服务于不同目的的 ioctl。
 
 *分析基于 CUDA 13.1 / Driver 595.58.03。多 context 场景包含 4 个独立 context。*
+
+*Deep Dive Into CUDA — 2026 年 6 月*

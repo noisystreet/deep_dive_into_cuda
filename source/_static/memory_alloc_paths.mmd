@@ -1,0 +1,15 @@
+flowchart LR
+    subgraph API["CUDA 分配 API"]
+        M["cudaMalloc"]
+        H["cudaHostAlloc"]
+        U["cudaMallocManaged"]
+        A["cudaMallocAsync"]
+    end
+    M -->|"ioctl(0x2a)×1 + 0x2b×1"| MG["GPU 物理显存<br/>无 mmap: 虚地址已预留"]
+    H -->|"mmap /dev/zero + ioctl(0x2a)"| HG["pinned 物理页<br/>锁定 + 注册 DMA 地址"]
+    U -->|"ioctl(0x2a) 注册虚地址"| UG["不分配物理页<br/>首次访问触发 PF (0x4e)"]
+    A -->|"首次: ioctl(0x2a) 建池 64 MB"| AG["从显存池分配<br/>后续分配/释放无 ioctl"]
+    style MG fill:#c8e6c9
+    style HG fill:#fff9c4
+    style UG fill:#ffe0b2
+    style AG fill:#bbdefb

@@ -1,0 +1,15 @@
+flowchart LR
+    subgraph CAP["capture: 正常 launch 记录"]
+        A["cudaStreamBeginCapture<br/>+ kernel launch (ioctl 0x4e)"]
+    end
+    subgraph INST["instantiate: 最重, 占重建时间 78%"]
+        B["cudaGraphInstantiate<br/>验证 + 编译图<br/>ioctl(0x4e)×1 + 0x2a×1"]
+    end
+    subgraph PLAY["launch: 重放 100 次"]
+        C["cudaGraphLaunch<br/>1 次 ioctl(0x4e) 提交整张图"]
+    end
+    A --> B --> C
+    C --> U["cudaGraphExecUpdate<br/>仅参数变化: 0x4e×1<br/>无需重新 capture"]
+    style B fill:#ffe0b2
+    style C fill:#c8e6c9
+    style U fill:#bbdefb

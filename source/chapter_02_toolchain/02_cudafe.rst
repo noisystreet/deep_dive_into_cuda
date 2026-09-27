@@ -2,7 +2,9 @@ CUDAFE++ 分析：CUDA 语言前端
 ================================
 
    cudafe++ = CUDA Front End，是 CUDA 编译工具链中负责 **解析 CUDA
-   语法**\ 、 **分离 host/device 代码**\ 、\ **生成 host stub**
+   语法**\ 、 **分离 host/device 代码**\ 、\ **生成 host stub**\ 的前端组件。
+
+   分析基于 CUDA 13.1 (build 37061995)
 
 .. admonition:: 你知道吗？
 
@@ -13,9 +15,6 @@ CUDAFE++ 分析：CUDA 语言前端
    的编译器都基于它。NVIDIA 选择了最稳妥的路径：用 EDG 做解析，
    用自家的 NVVM/LLVM 做优化和代码生成。直到今天，Clang 的 CUDA
    支持仍需通过 ``-x cuda`` 模式模拟这一流程，兼容性仍不如 nvcc。
-
-
-分析基于 CUDA 13.1 (build 37061995)
 
 --------------
 
@@ -443,3 +442,5 @@ cudafe++ 是一个 **基于 EDG C++ 6.7 前端的 CUDA
 --------------
 
 *分析基于 CUDA 13.1 (build 37061995)*
+
+*Deep Dive Into CUDA — 2026 年 6 月*

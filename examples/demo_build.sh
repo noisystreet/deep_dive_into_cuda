@@ -31,3 +31,22 @@ grep 'wmma\.' wmma_matmul.ptx | head -10
 echo ""
 echo "=== 运行 WMMA 版本 ==="
 ./wmma_matmul
+
+echo ""
+echo "=========================================="
+echo "=== 编译运行时专题示例 (第 3/4 章) ==="
+# Driver API 示例需要 -lcuda
+nvcc $NVCC_FLAGS -o context_demo context_demo.cu -lcuda
+nvcc $NVCC_FLAGS -o greenctx_demo greenctx_demo.cu -lcuda
+nvcc $NVCC_FLAGS -o module_demo module_demo.cu -lcuda
+# cuBLAS 示例需要 -lcublas
+nvcc $NVCC_FLAGS -o cublas_demo cublas_demo.cu -lcublas
+# NVRTC 示例需要 -lnvrtc -lcuda
+nvcc $NVCC_FLAGS -o nvrtc_demo nvrtc_demo.cu -lnvrtc -lcuda
+# 仅依赖 Runtime 的示例
+nvcc $NVCC_FLAGS -o memory_demo memory_demo.cu
+nvcc $NVCC_FLAGS -o uvm_pagefault_demo uvm_pagefault_demo.cu
+nvcc $NVCC_FLAGS -o graph_capture_demo graph_capture_demo.cu
+
+echo ""
+echo "=== 全部示例编译完成 ==="

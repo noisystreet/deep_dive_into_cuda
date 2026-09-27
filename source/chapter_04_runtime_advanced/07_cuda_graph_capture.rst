@@ -33,6 +33,10 @@ GPU 空闲时间。CUDA Graph 的核心优化：
 - **实例化**：将捕获的命令图编译为 GPU 可执行的调度单元
 - **重放**：一次提交整张图，多次 kernel launch 合并为 1 次 ioctl
 
+从 capture 到重放的三个阶段及 ioctl 变化：
+
+.. mermaid:: ../_static/graph_capture_flow.mmd
+
 --------------
 
 三种模式对比
@@ -212,3 +216,5 @@ batch size 或输入指针变化。这是 CUDA Graph 实际部署中最重要的
 
 *分析基于 CUDA 13.1 / Driver 595.58.03 / RTX 4060 Laptop GPU。单 kernel 图
 测试，实际多节点图的加速比可达 5-10×。*
+
+*Deep Dive Into CUDA — 2026 年 6 月*

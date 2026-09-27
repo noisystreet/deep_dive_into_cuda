@@ -53,6 +53,10 @@ strace 显示 cuBLAS 的加载过程：
    ioctl(0x2b) × 3     ← fence
    ; 无额外的 mmap — cuBLAS 使用 cudaMalloc 分配 workspace
 
+从应用到 GPU 的库分层与 kernel 选择路径：
+
+.. mermaid:: ../_static/cublas_dispatch.mmd
+
 --------------
 
 cuBLAS SGEMM 调用链
@@ -189,3 +193,5 @@ cuBLASLt 将 kernel 选择逻辑暴露给用户，支持：
 
 *分析基于 CUDA 13.1 (cuBLAS 13.2.1.1) / RTX 4060 Laptop GPU。naive GEMM*
 *仅为教学用途，实际应用中应使用 cuBLAS、CUTLASS 或 Triton。*
+
+*Deep Dive Into CUDA — 2026 年 6 月*

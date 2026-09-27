@@ -253,3 +253,5 @@ Fat binary 容器格式与 image 目录结构见
 --------------
 
 *分析基于 CUDA 13.1 (build 37061995)，链接命令来自 examples/build/CMakeFiles/vector_add.dir/link.txt。*
+
+*Deep Dive Into CUDA — 2026 年 6 月*

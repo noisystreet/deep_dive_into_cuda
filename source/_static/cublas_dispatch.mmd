@@ -1,0 +1,14 @@
+flowchart TB
+    APP["应用: cublasSgemm(handle, ...)"] --> API["libcublas.so.13 (52 MB)<br/>高级 API 层"]
+    API --> D{"kernel 选择<br/>cache + heuristic"}
+    LT["libcublasLt.so.13 (480 MB)<br/>数千个预编译 kernel"] --> D
+    D -->|"M &lt; 16"| K1["scalar kernel"]
+    D -->|"K % 4 ≠ 0"| K2["非对齐 kernel"]
+    D -->|一般情况| K3["tile-based kernel<br/>16×16 / 32×32"]
+    D -->|"FP16 + sm_75+"| K4["Tensor Core kernel"]
+    K1 --> L["cuLaunchKernel<br/>→ libcuda.so → ioctl(0x4e)×2-3"]
+    K2 --> L
+    K3 --> L
+    K4 --> L
+    style K3 fill:#c8e6c9
+    style LT fill:#fff9c4

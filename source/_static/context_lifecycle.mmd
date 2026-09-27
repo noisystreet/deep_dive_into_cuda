@@ -1,0 +1,18 @@
+flowchart TB
+    subgraph INIT["cuInit(0): Driver 初始化"]
+        I1["open /dev/nvidiactl"]
+        I2["open /dev/nvidia-uvm ×2"]
+        I3["不打开 /dev/nvidia0"]
+    end
+    subgraph CREATE["cuCtxCreate: 每个 context"]
+        C1["open /dev/nvidia0 + /dev/nvidiactl"]
+        C2["ioctl(0x49) 分配 context ID"]
+        C3["ioctl(0x2a) ×8 页表 / 内部结构"]
+        C4["mmap PROT_NONE 占位 GPU BAR"]
+    end
+    subgraph SWITCH["cuCtxPush/PopCurrent: 上下文切换"]
+        S1["纯用户态: 修改线程 context 指针<br/>无 ioctl (微秒级)"]
+    end
+    INIT --> CREATE --> SWITCH
+    SWITCH --> DESTROY["cuCtxDestroy<br/>close(fd) + munmap"]
+    style S1 fill:#c8e6c9

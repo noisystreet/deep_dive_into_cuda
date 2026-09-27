@@ -37,11 +37,12 @@ fatbinary 工具、g++ 链接、TileIR、RDC；以 ``__cudaRegister*`` 注册链
 用 ``strace`` 跟踪 ``vector_add`` 从 ``cudaMalloc`` 到 ``ioctl(/dev/nvidia0)``，
 分析 Driver API、libcudart、kernel launch 与同步机制。
 
-第 4 章：进阶运行时专题（8 篇）
+第 4 章：进阶运行时专题（9 篇）
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 在 ``vector_add`` 主线之外，用独立示例分析 Stream/Graph（概念与捕获分两篇
-连续阅读）、内存与 UVM、Context、cuModule 动态加载、cuBLAS 库调用等专题。
+连续阅读）、内存与 UVM、Context、cuModule 动态加载、cuBLAS 库调用与
+NVRTC 在线编译等专题。
 
 附录
 ----
@@ -56,7 +57,7 @@ fatbinary 工具、g++ 链接、TileIR、RDC；以 ``__cudaRegister*`` 注册链
 2. **第 1 章 1.5 SASS 执行** — 可先略读，在读完第 2 章 ptxas 与第 3 章
    launch 后回头对照 constant bank 与谓词分歧，体会更深。
 3. **第 4 章 Graph** — 先读 Streams/Graphs 概念（4.1），紧接着读 Graph
-   捕获专篇（4.2），再进入内存等专题。
+   捕获专篇（4.7），再进入内存等专题。
 4. **专题跳转** — PTX JIT（1.6）与 cuModule 加载（4.3）、注册链（2.11）与
    launch（3.3）可成对对照阅读。
 

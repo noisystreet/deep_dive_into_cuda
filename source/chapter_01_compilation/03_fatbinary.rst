@@ -492,3 +492,5 @@ cubin vs fatbin 对比
 --------------
 
 *所有文件可在 ``build/`` 目录中找到。*
+
+*Deep Dive Into CUDA — 2026 年 6 月*

@@ -1,0 +1,12 @@
+flowchart TB
+    ROOT["kernel 加载方式"]
+    ROOT --> S["静态链接<br/>&lt;&lt;&lt;&gt;&gt;&gt; (nvcc)"]
+    ROOT --> C["动态 cubin<br/>cuModuleLoadData"]
+    ROOT --> P["PTX JIT<br/>cuModuleLoadData"]
+    S --> S1["编译期: 多次 execve<br/>cicc / ptxas / fatbinary"]
+    S1 --> S2["运行期: fatbin 已嵌入<br/>解析 ELF, 无额外 ioctl"]
+    C --> C1["运行期: 读取 cubin (3.6 KB)<br/>ELF 解析, 无 ioctl / 无 execve"]
+    P --> P1["运行期: 进程内 NVVM JIT<br/>无 execve, 少量 ioctl (0x4e/0x2a/0x2b)"]
+    style S2 fill:#c8e6c9
+    style C1 fill:#c8e6c9
+    style P1 fill:#fff9c4

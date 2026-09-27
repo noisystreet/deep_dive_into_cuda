@@ -357,3 +357,5 @@ WPC 与 RDC 注册对比
 ``rdc_vector_add`` 的 ``objdump`` / ``readelf`` 输出互证；宏定义引用
 ``/usr/local/cuda/targets/x86_64-linux/include/crt/host_runtime.h`` 与
 ``/usr/local/cuda/bin/crt/link.stub``。*
+
+*Deep Dive Into CUDA — 2026 年 6 月*

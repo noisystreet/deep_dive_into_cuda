@@ -29,6 +29,10 @@ NVRTC 在线编译：进程内编译 vs nvcc 子进程
    两个路径的差别类似 GCC 和 LLVM JIT 的区别——前者产生持久化文件，
    后者在内存中完成所有编译。
 
+两条编译路径的完整对比：
+
+.. mermaid:: ../_static/nvrtc_flow.mmd
+
 --------------
 
 系统调用对比
@@ -195,3 +199,5 @@ strace 显示 Driver API 路径的 ioctl 与 Runtime API 路径相同：
 
 *分析基于 CUDA 13.1 / Driver 595.58.03 / libnvrtc 13.1 / RTX 4060 Laptop GPU。
 NVRTC 编译时间因 kernel 复杂度而异，vec_add 为 254 ms，复杂模板可达数秒。*
+
+*Deep Dive Into CUDA — 2026 年 6 月*

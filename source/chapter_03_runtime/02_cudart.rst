@@ -1,8 +1,10 @@
 LIBCUDART 分析：CUDA Runtime API 库
 ===================================
 
-   libcudart = CUDA Runtime library，是用户程序直接链接的 CUDA 库， 提供
-   ``cudaMalloc``\ 、\ ``cudaMemcpy``\ 、\ ``cudaLaunch`` 等高层 API，
+   libcudart = CUDA Runtime library，是用户程序直接链接的 CUDA 库，提供
+   ``cudaMalloc``\ 、\ ``cudaMemcpy``\ 、\ ``cudaLaunch`` 等高层 API。
+
+   分析基于 CUDA 13.1 (build 37061995)
 
 .. admonition:: 你知道吗？
 
@@ -14,8 +16,6 @@ LIBCUDART 分析：CUDA Runtime API 库
    你只用一个 GPU、不关心上下文管理，使用 Runtime API 就够了；
    如果要做多 GPU、动态加载 cubin、或者控制 context 生命周期，
    就必须直接使用 Driver API。
-
-   分析基于 CUDA 13.1 (build 37061995)
 
 --------------
 
@@ -495,3 +495,5 @@ libcudart 内部维护了运行时状态的全局变量：
 --------------
 
 *分析基于 CUDA 13.1 (build 37061995)*
+
+*Deep Dive Into CUDA — 2026 年 6 月*

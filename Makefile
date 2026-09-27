@@ -31,4 +31,16 @@ examples:
 	cd $(EXAMPLES_DIR)/$(BUILD_DIR) && cmake .. && make
 	@echo ""
 	@echo "=== Examples built successfully ==="
-	@ls -lh $(EXAMPLES_DIR)/$(BUILD_DIR)/vector_add $(EXAMPLES_DIR)/$(BUILD_DIR)/wmma_matmul
+	@ls -lh $(EXAMPLES_DIR)/$(BUILD_DIR)/vector_add \
+		$(EXAMPLES_DIR)/$(BUILD_DIR)/wmma_matmul \
+		$(EXAMPLES_DIR)/$(BUILD_DIR)/graph_demo \
+		$(EXAMPLES_DIR)/$(BUILD_DIR)/streams_demo \
+		$(EXAMPLES_DIR)/$(BUILD_DIR)/memory_demo \
+		$(EXAMPLES_DIR)/$(BUILD_DIR)/uvm_pagefault_demo \
+		$(EXAMPLES_DIR)/$(BUILD_DIR)/context_demo \
+		$(EXAMPLES_DIR)/$(BUILD_DIR)/greenctx_demo \
+		$(EXAMPLES_DIR)/$(BUILD_DIR)/graph_capture_demo \
+		$(EXAMPLES_DIR)/$(BUILD_DIR)/module_demo \
+		$(EXAMPLES_DIR)/$(BUILD_DIR)/cublas_demo \
+		$(EXAMPLES_DIR)/$(BUILD_DIR)/nvrtc_demo \
+		$(EXAMPLES_DIR)/$(BUILD_DIR)/rdc_vector_add

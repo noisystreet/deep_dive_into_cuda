@@ -4,6 +4,10 @@ Kernel Launch 深度追踪
    聚焦 ``vector_add<<<blocks, threads>>>(...)`` 这一行代码，从反汇编、
    stub 源码与 strace 三条线索，逐步还原 kernel 启动的完整调用链。
 
+   环境: CUDA 13.1 / Driver 595.58.03 / sm_89 (Ada Lovelace) / Linux x86-64
+
+   示例: ``examples/vector_add.cu`` 第 40 行
+
 .. admonition:: 你知道吗？
 
    你是否想过 GPU kernel 的 launch 延迟有多大？从 CPU 调用
@@ -14,11 +18,6 @@ Kernel Launch 深度追踪
    (4) GPU 调度器分发到 SM。这就是为什么 GPU 适合**粗粒度并行**
    ——如果每个 kernel 执行时间小于 10 微秒，launch 开销就会占据
    主导地位。
-
-CUDA 13.1 / Driver 595.58.03 / sm_89 (Ada Lovelace) / Linux x86-64
-
-示例: ``examples/vector_add.cu`` 第 40 行
-
 
 --------------
 

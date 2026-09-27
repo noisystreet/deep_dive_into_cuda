@@ -98,3 +98,5 @@
       Half-precision Matrix Multiply-Accumulate，Tensor Core 的
       SASS 级原生指令。格式为 ``HMMA.16816.F32`` — 16×16×16 矩阵、
       half 输入 / float 累加。每条指令处理 4096 个乘加操作。
+
+*Deep Dive Into CUDA — 2026 年 6 月*

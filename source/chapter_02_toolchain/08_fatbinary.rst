@@ -318,3 +318,5 @@ image2 与 image3
 --------------
 
 *分析基于 CUDA 13.1 (build 37061995)，手工复现与 nvcc --verbose 日志互证。*
+
+*Deep Dive Into CUDA — 2026 年 6 月*

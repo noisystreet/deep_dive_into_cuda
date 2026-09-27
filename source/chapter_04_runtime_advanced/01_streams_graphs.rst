@@ -3,6 +3,12 @@ Streams 与 CUDA Graphs 深度分析
 
    Streams 和 CUDA Graphs 是 CUDA 并发与编译的两种核心抽象。本节用
    strace 和 ioctl 模式分析它们的 **运行时真实行为**：stream 如何提交到
+   GPU 命令队列，Graph 实例化是否走 nvcc 子进程，以及它们与普通
+   launch 的系统调用差异。
+
+   环境: CUDA 13.1 / Driver 595.58.03 / sm_89 (Ada Lovelace) / Linux x86-64
+
+   测试程序: ``examples/streams_demo.cu``, ``examples/graph_demo.cu``
 
 .. admonition:: 你知道吗？
 
@@ -13,13 +19,6 @@ Streams 与 CUDA Graphs 深度分析
    为什么 ``torch.cuda.Stream`` 可以加速推理——通过将不同层的计算
    分配到不同 stream 实现**计算和传输的重叠**。你可以在 PyTorch 中
    用 ``with torch.cuda.stream(stream):`` 将操作指派到特定 stream。
-
-   GPU 命令队列，Graph 实例化是否走 nvcc 子进程，以及它们与普通
-   launch 的系统调用差异。
-
-   环境: CUDA 13.1 / Driver 595.58.03 / sm_89 (Ada Lovelace) / Linux x86-64
-
-   测试程序: ``examples/streams_demo.cu``, ``examples/graph_demo.cu``
 
 --------------
 
@@ -242,3 +241,5 @@ Graph 捕获的逐步 strace 分析见下一节 :doc:`07_cuda_graph_capture`。
    架构时至关重要。
 
 *分析基于 CUDA 13.1 / Driver 595.58.03。strace 统计含初始化阶段的 ioctl。*
+
+*Deep Dive Into CUDA — 2026 年 6 月*

@@ -3,6 +3,12 @@ libnvvm / libdevice 深度分析
 
    第 2.3 节已从架构层面介绍 cicc、libnvvm.so 与 libdevice.10.bc。
    本节聚焦 **libdevice 如何在编译期被链接、优化并消失于最终 PTX**，
+   以及 libnvvm API 在其中的角色。
+
+   分析基于 CUDA 13.1 (build 37061995)，主线程序 ``examples/vector_add.cu``，
+   对照实验 ``sinf(x)`` kernel。
+
+   环境: Linux x86-64 / sm_89
 
 .. admonition:: 你知道吗？
 
@@ -13,13 +19,6 @@ libnvvm / libdevice 深度分析
    快一个数量级。代价是精度略低：CUDA 的 ``__sinf`` 只保证 ULP
    （unit in the last place）误差在 2 以内，而 IEEE 标准要求 0.5。
    这是 GPU 通过**精度换速度**的典型设计取舍。
-
-以及 libnvvm API 在其中的角色。
-
-分析基于 CUDA 13.1 (build 37061995)，主线程序 ``examples/vector_add.cu``，
-对照实验 ``sinf(x)`` kernel。
-
-   环境: Linux x86-64 / sm_89
 
 --------------
 
@@ -39,6 +38,11 @@ cicc 收到 ``cpp1.ii`` 后，在 NVVM 框架内完成：
 2. **按需** 将 ``libdevice.10.bc`` 作为额外模块链接进来
 3. 运行 NVVM / LLVM Pass（内联、DCE、常量折叠等）
 4. 生成 ``*.ptx``
+
+下图展示 ``libdevice.10.bc`` 如何在编译期被按需链接进用户 LLVM IR 模块，
+并在 Pass 管线后从最终 PTX 中消失：
+
+.. mermaid:: ../_static/libdevice_link.mmd
 
 关键发现
 -----------
@@ -71,4 +75,6 @@ libdevice 文件结构
    路径: /usr/local/cuda/nvvm/libdevice/libdevice.10.bc
    大小: 454,304 字节
    格式: LLVM IR Bitcode (LLVM 7.0.1)
+
+*Deep Dive Into CUDA — 2026 年 6 月*
 

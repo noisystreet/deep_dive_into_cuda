@@ -20,7 +20,7 @@
 | `source/chapter_01_compilation/` | 编译过程深度分析（6 篇：流水线、中间产物、Fat Binary、多架构、SASS 执行、PTX JIT） |
 | `source/chapter_02_toolchain/` | nvcc 工具链分析（11 篇：nvcc / cudafe / cicc / ptxas / libdevice / nvlink / fatbinary / host_link / tileir / rdc / 注册链） |
 | `source/chapter_03_runtime/` | 运行时与驱动（4 篇：驱动接口、libcudart、kernel launch、同步） |
-| `source/chapter_04_runtime_advanced/` | 进阶运行时专题（8 篇：Stream/Graph、Graph 捕获、内存、module 加载、UVM、Context、Green Context、cuBLAS） |
+| `source/chapter_04_runtime_advanced/` | 进阶运行时专题（9 篇：Stream/Graph、内存管理、module 加载、UVM、Context、Green Context、Graph 捕获、cuBLAS、NVRTC 在线编译） |
 | `source/appendix/` | 附录（资源推荐、术语表） |
 | `source/conf.py` | Sphinx 构建配置（sphinx_rtd_theme） |
 | `source/_static/*.mmd` | Mermaid 示意图（全景图、流水线、Fat Binary 层级、IOCTL 饼图、调用链） |
@@ -81,7 +81,7 @@
 
 ## 写作路线图
 
-全书共 **29 篇** 正文 + 前言 + 附录 2 篇。推荐顺序：第 1→2→3→4 章；第 2 章
+全书共 **30 篇** 正文 + 前言 + 附录 2 篇。推荐顺序：第 1→2→3→4 章；第 2 章
 11 注册链是第 3 章 launch 的前置；第 4 章 Graph 捕获紧接 Streams/Graphs 概念
 篇阅读。
 
@@ -99,9 +99,9 @@
    - 2.9 TileIR → 2.10 RDC → 2.11 ``__cudaRegister*`` 注册链
 4. **第 3 章：运行时与驱动**（4 篇）
    - 3.1 GPU 驱动接口 → 3.2 libcudart → 3.3 kernel launch → 3.4 同步
-5. **第 4 章：进阶运行时专题**（8 篇）
-   - Streams/Graphs 概念 → Graph 捕获 → 内存管理 → module 加载
-   - UVM 缺页 → Context → Green Context → cuBLAS 内部分析
+5. **第 4 章：进阶运行时专题**（9 篇）
+   - Streams/Graphs 概念 → 内存管理 → module 加载 → UVM 缺页
+   - Context → Green Context → Graph 捕获 → cuBLAS 内部分析 → NVRTC 在线编译
 6. **附录** — 资源推荐、术语表
 
 ## 构建方法

@@ -1,0 +1,14 @@
+flowchart TB
+    subgraph OFF["离线编译 (nvcc, 构建时)"]
+        O1[".cu 源文件"] --> O2["execve: cicc / ptxas / fatbinary<br/>~12 次子进程"]
+        O2 --> O3["可执行文件 (含 fatbin)"]
+    end
+    subgraph ONLINE["在线编译 (NVRTC, 运行时)"]
+        N1[".cu 源码字符串"] --> N2["nvrtcCompileProgram<br/>进程内 LLVM, execve = 0<br/>254 ms → PTX (1117 B)"]
+        N2 --> N3["cuModuleLoadData<br/>驱动 JIT: PTX → SASS"]
+        N3 --> N4["cuModuleGetFunction<br/>+ cuLaunchKernel"]
+    end
+    O3 --> L1["ioctl(0x4e) launch<br/>0.285 ms"]
+    N4 --> L2["ioctl(0x4e) launch<br/>0.302 ms"]
+    style N2 fill:#fff9c4
+    style N3 fill:#ffe0b2

@@ -17,6 +17,7 @@ deep_dive_into_cuda/
 │   ├── chapter_01_compilation/    # 编译过程深度分析
 │   ├── chapter_02_toolchain/      # nvcc 工具链逆向分析
 │   ├── chapter_03_runtime/        # 运行时与驱动
+│   ├── chapter_04_runtime_advanced/ # 进阶运行时专题
 │   ├── appendix/                  # 附录
 │   └── _static/                   # Mermaid 图与自定义 CSS
 ├── examples/                      # 示例源码
@@ -35,6 +36,7 @@ deep_dive_into_cuda/
 | **编译过程** | NVCC 编译流水线、中间产物分析、Fat Binary 结构 |
 | **工具链逆向** | nvcc / cudafe++ / cicc / ptxas / nvlink 逆向分析 |
 | **运行时与驱动** | libcudart 分析、GPU 驱动接口 strace 分析 |
+| **进阶运行时专题** | Stream/Graph、Graph 捕获、内存与 UVM、Context、Green Context、module 加载、cuBLAS、NVRTC 在线编译 |
 
 ## 本地构建
 

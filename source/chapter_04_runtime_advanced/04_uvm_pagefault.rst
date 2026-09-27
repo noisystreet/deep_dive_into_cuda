@@ -41,6 +41,10 @@ UVM 的惰性分配模型
 strace 中的 ``ioctl(0x4e)`` 在 UVM 场景下同时服务于两种功能：普通
 kernel launch (DMA) 和 page fault 处理。区分它们需要结合时间戳上下文。
 
+惰性分配与预取两条路径的对比：
+
+.. mermaid:: ../_static/uvm_pagefault_flow.mmd
+
 --------------
 
 各场景性能对比
@@ -177,3 +181,5 @@ GPU 的 UVM 页大小为 64 KB（而非 CPU 的 4 KB）。这意味着：
 
 *分析基于 CUDA 13.1 / RTX 4060 Laptop GPU / 512 MB 测试数据。实际数据
 因 GPU 型号和驱动版本而异。*
+
+*Deep Dive Into CUDA — 2026 年 6 月*

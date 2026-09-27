@@ -46,6 +46,10 @@ cuModule 动态加载：Driver API 的运行时编译路径
      - **运行时** 进程内
        NVVM JIT 编译
 
+三条路径在编译时机与运行期开销上的差异：
+
+.. mermaid:: ../_static/module_load_paths.mmd
+
 离线编译的子进程问题
 -----------------------
 
@@ -176,3 +180,5 @@ PTX JIT：进程内编译的 ioctl 代价
    管理多个文件。
 
 *分析基于 CUDA 13.1 / Driver 595.58.03。动态加载的 cubin 由 nvcc -cubin 独立编译。*
+
+*Deep Dive Into CUDA — 2026 年 6 月*

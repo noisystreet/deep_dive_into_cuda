@@ -3,6 +3,13 @@ Green Context：GPU 资源分区与轻量级上下文
 
    Green Context 是 CUDA 12.x+ 引入的**硬件资源分区**抽象。与
    传统 Context 管理整个 GPU 不同，Green Context 允许将一个 GPU 的
+   SM（流多处理器）划分为多个 partition，每个 partition 创建独立的
+   轻量级上下文。这是 MIG（Multi-Instance GPU）在单 GPU 内的软件级
+   等价实现。
+
+   环境: CUDA 13.1 / Driver 595.58.03 / sm_89 (Ada Lovelace) / RTX 4060
+
+   测试程序: ``examples/greenctx_demo.cu``
 
 .. admonition:: 你知道吗？
 
@@ -14,14 +21,6 @@ Green Context：GPU 资源分区与轻量级上下文
    Green Context 最常见的用途是 MIG（Multi-Instance GPU）的软件
    替代方案——当 GPU 不支持 MIG 硬件分区时，Green Context 在驱动
    层提供类似的分区能力。
-
-   SM（流多处理器）划分为多个 partition，每个 partition 创建独立的
-   轻量级上下文。这是 MIG（Multi-Instance GPU）在单 GPU 内的软件级
-   等价实现。
-
-   环境: CUDA 13.1 / Driver 595.58.03 / sm_89 (Ada Lovelace) / RTX 4060
-
-   测试程序: ``examples/greenctx_demo.cu``
 
 --------------
 
@@ -64,6 +63,10 @@ API 流程
   cubin/PTX 可以从 green context 访问。
 - 使用后需 ``cuCtxSetCurrent(primary_ctx)`` 恢复，再
   ``cuGreenCtxDestroy`` 销毁。
+
+从查询 SM 资源到创建 partition 的完整流程：
+
+.. mermaid:: ../_static/greenctx_partition.mmd
 
 --------------
 
@@ -181,3 +184,5 @@ API 流程
 
 *分析基于 CUDA 13.1 / Driver 595.58.03 / RTX 4060 Laptop GPU (24 SM, sm_89).*
 *Green Context 需要 CUDA 12.0+ 和 sm_86+ GPU.*
+
+*Deep Dive Into CUDA — 2026 年 6 月*

@@ -3,6 +3,12 @@ CUDA 内存管理深度分析
 
    CUDA 程序能同时访问 CPU 内存和 GPU 显存，这种双重内存模型是其
    编程复杂性的核心来源。本节通过 strace 和 ``/proc/pid/maps`` 捕获
+   每种分配路径的实际系统调用，揭示 ``cudaMalloc``、``cudaHostAlloc``、
+   ``cudaMallocManaged`` 和 ``cudaMallocAsync`` 在内核侧的真实差异。
+
+   环境: CUDA 13.1 / Driver 595.58.03 / sm_89 (Ada Lovelace) / Linux x86-64
+
+   测试程序: ``examples/memory_demo.cu`` (覆盖 6 种分配场景)
 
 .. admonition:: 你知道吗？
 
@@ -14,13 +20,6 @@ CUDA 内存管理深度分析
    OOM。这就是为什么生产环境通常**限制 pinned memory 使用量**。
    一个常见的做法是用 ``cudaHostRegister`` 将已分配的 malloc
    内存注册为 pinned，用完后注销，而非全部使用 ``cudaHostAlloc``。
-
-   每种分配路径的实际系统调用，揭示 ``cudaMalloc``、``cudaHostAlloc``、
-   ``cudaMallocManaged`` 和 ``cudaMallocAsync`` 在内核侧的真实差异。
-
-   环境: CUDA 13.1 / Driver 595.58.03 / sm_89 (Ada Lovelace) / Linux x86-64
-
-   测试程序: ``examples/memory_demo.cu`` (覆盖 6 种分配场景)
 
 --------------
 
@@ -49,6 +48,12 @@ GPU 通过 PCIe BAR (Base Address Register) 将显存暴露给 CPU。
   第 4 节。
 - ``---p`` (PROT_NONE) 区域是 **GPU 预留地址空间**——它们占位但不分配
   物理页面，访问会触发 segment fault。
+
+四种分配 API 的底层路径总览：
+
+.. mermaid:: ../_static/memory_alloc_paths.mmd
+
+--------------
 
 ``cudaMalloc`` 系统调用：三步走
 ----------------------------------
@@ -244,3 +249,5 @@ ioctl 统计摘要
    别名实现的，strace 层面无额外 ioctl。
 
 *分析基于 CUDA 13.1 / Driver 595.58.03 / NVIDIA GeForce RTX 4060 Laptop GPU。*
+
+*Deep Dive Into CUDA — 2026 年 6 月*

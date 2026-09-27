@@ -336,3 +336,5 @@ NVIDIA 文档要求 cuTile / tileiras / nvvm / nvcc 的 **主次版本一致**�
 --------------
 
 *分析基于 CUDA 13.1 (CTK build 37061995) / tileiras V13.1.80 / Driver 595.58.03。*
+
+*Deep Dive Into CUDA — 2026 年 6 月*

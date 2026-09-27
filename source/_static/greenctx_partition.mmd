@@ -1,0 +1,12 @@
+flowchart TB
+    A["cuDevicePrimaryCtxRetain()<br/>保留 primary context"] --> B["cuDeviceGetDevResource(SM)<br/>RTX 4060: 24 SM"]
+    B --> C["cuDevSmResourceSplitByCount()<br/>minSmPartitionSize = 2"]
+    C --> P["partition: 2 SM"]
+    C --> R["remainder: 22 SM<br/>仍归 primary ctx"]
+    P --> D["cuDevResourceGenerateDesc()"]
+    D --> E["cuGreenCtxCreate()<br/>ioctl(0x4f) 提交分区配置"]
+    E --> F["cuCtxFromGreenCtx() → CUcontext"]
+    F --> G["cuCtxSetCurrent()<br/>cuMemAlloc / cuLaunchKernel"]
+    G --> H["cuCtxSetCurrent(primary)<br/>cuGreenCtxDestroy()"]
+    style E fill:#fff9c4
+    style P fill:#c8e6c9

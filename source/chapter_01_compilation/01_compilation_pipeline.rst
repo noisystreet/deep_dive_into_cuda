@@ -564,3 +564,5 @@ nvlink 介入的触发
 
 *分析基于 CUDA 13.1 / sm_89 (Ada Lovelace)
 架构，不同版本/架构的详细参数可能有所不同。*
+
+*Deep Dive Into CUDA — 2026 年 6 月*

@@ -4,6 +4,8 @@
    聚焦 ``vector_add.cu`` 第 41 行的 ``cudaDeviceSynchronize()``\ ，用
    strace 还原 Runtime → Driver → 内核 → eventfd/futex 的完整等待路径。
 
+   环境: CUDA 13.1 / Driver 595.58.03 / sm_89 (Ada Lovelace) / Linux x86-64
+
 .. admonition:: 你知道吗？
 
    NVIDIA 的 CPU-GPU 同步模型有一个鲜为人知的事实：
@@ -12,9 +14,6 @@
    fence**——``cudaDeviceSynchronize`` 就是阻塞 CPU 直到那个 fence
    完成。这解释了为什么连续调用两次同步几乎没有额外开销。
    真正昂贵的不是同步本身，而是 GPU 执行所有排队工作所需的时间。
-
-
-环境: CUDA 13.1 / Driver 595.58.03 / sm_89 (Ada Lovelace) / Linux x86-64
 
 --------------
 

@@ -534,3 +534,5 @@ cicc 的独特之处
 --------------
 
 *分析基于 CUDA 13.1 (build 37061995)，NVVM 7.0.1 / LLVM 7.0.1 基础。*
+
+*Deep Dive Into CUDA — 2026 年 6 月*

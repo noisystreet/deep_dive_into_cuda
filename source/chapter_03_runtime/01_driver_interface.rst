@@ -244,7 +244,9 @@ GPU 显存分配
    cudaMalloc(&d_c, 4MB)    → ioctl(NV_DEV_IOCTL(0x2a)) + mmap
 
 驱动程序内部管理 GPU 显存，通过 ioctl 向内核模块请求分配，内核模块在 GPU
-BAR 中划分物理页。
+BAR 中划分物理页。下图串联了 ``cudaMalloc`` 从用户态到 GPU 显存的完整路径：
+
+.. mermaid:: ../_static/memory_layout.mmd
 
 --------------
 
@@ -509,3 +511,5 @@ futex (用户态同步)     ~100+
 --------------
 
 *分析基于 CUDA 13.1 / Driver 595.58.03, GPU: sm_89 (Ada Lovelace)*
+
+*Deep Dive Into CUDA — 2026 年 6 月*

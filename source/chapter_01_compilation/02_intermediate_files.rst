@@ -17,8 +17,6 @@ NVCC 编译中间产物分析
    ``cuobjdump -sass`` 反汇编查看实际硬件指令。CUDA 编译器不会像
    GCC/Clang 那样输出详细优化报告，中间文件是唯一的"编译器日志"。
 
-.. admonition:: 你知道吗？
-
    虽然日常开发不会每次都用 ``--keep``（因为它大幅增加编译时间），
    但以下场景中它是标准做法：(1) 提交 CUDA bug report 给 NVIDIA 时，
    ``--keep`` 的输出是必附内容；(2) 分析性能问题时，查看 ptxas 生成
@@ -367,3 +365,5 @@ cicc 将 device 代码编译为 PTX，这是 GPU 指令集的虚拟中间表示�
 4. **Fat Binary 的双保险** — fatbinary 同时保留了 PTX 和 SASS。SASS 用
    于直接执行（零开销），PTX 用于 JIT 回退（兼容不同驱动版本或 JIT 优
    化）。
+
+*Deep Dive Into CUDA — 2026 年 6 月*

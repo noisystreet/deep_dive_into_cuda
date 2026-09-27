@@ -288,3 +288,5 @@ JIT 与 cubin 直载的 ioctl 模式在 **kernel launch** 阶段趋于一致；�
 
 *分析基于 CUDA 13.1 (build 37061995)，实验目录 /tmp/ptx_jit_demo 与
 ``examples/vector_add.cu`` 互证。*
+
+*Deep Dive Into CUDA — 2026 年 6 月*
