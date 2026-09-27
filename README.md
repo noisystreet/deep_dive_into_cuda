@@ -4,9 +4,7 @@
 
 ## 文档
 
-在线文档（Read the Docs）：
-
-> TODO: 部署后添加链接
+在线文档（Read the Docs）：<https://deep-dive-into-cuda.readthedocs.io>
 
 ## 目录结构
 
