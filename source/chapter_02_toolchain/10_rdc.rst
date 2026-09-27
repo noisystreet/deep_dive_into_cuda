@@ -298,5 +298,3 @@ RDC 增加 nvlink 与额外 fatbinary/stub 步骤，可执行文件略大于 WPC
 --------------
 
 *分析基于 CUDA 13.1 (build 37061995)，样例 ``examples/rdc/`` 与 /tmp/rdc_demo 构建日志互证。*
-
-*Deep Dive Into CUDA — 2026 年 6 月*

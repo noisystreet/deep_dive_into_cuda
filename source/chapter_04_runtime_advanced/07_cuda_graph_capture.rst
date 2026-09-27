@@ -218,5 +218,3 @@ batch size 或输入指针变化。这是 CUDA Graph 实际部署中最重要的
 
 *分析基于 CUDA 13.1 / Driver 595.58.03 / RTX 4060 Laptop GPU。单 kernel 图
 测试，实际多节点图的加速比可达 5-10×。*
-
-*Deep Dive Into CUDA — 2026 年 6 月*

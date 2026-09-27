@@ -367,5 +367,3 @@ cicc 将 device 代码编译为 PTX，这是 GPU 指令集的虚拟中间表示�
 4. **Fat Binary 的双保险** — fatbinary 同时保留了 PTX 和 SASS。SASS 用
    于直接执行（零开销），PTX 用于 JIT 回退（兼容不同驱动版本或 JIT 优
    化）。
-
-*Deep Dive Into CUDA — 2026 年 6 月*

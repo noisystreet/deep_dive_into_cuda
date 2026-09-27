@@ -186,5 +186,3 @@ API 流程
 
 *分析基于 CUDA 13.1 / Driver 595.58.03 / RTX 4060 Laptop GPU (24 SM, sm_89).*
 *Green Context 需要 CUDA 12.0+ 和 sm_86+ GPU.*
-
-*Deep Dive Into CUDA — 2026 年 6 月*

@@ -495,5 +495,3 @@ libcudart 内部维护了运行时状态的全局变量：
 --------------
 
 *分析基于 CUDA 13.1 (build 37061995)*
-
-*Deep Dive Into CUDA — 2026 年 6 月*

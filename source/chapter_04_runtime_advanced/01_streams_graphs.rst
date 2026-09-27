@@ -245,5 +245,3 @@ Graph 捕获的逐步 strace 分析见下一节 :doc:`07_cuda_graph_capture`。
    架构时至关重要。
 
 *分析基于 CUDA 13.1 / Driver 595.58.03。strace 统计含初始化阶段的 ioctl。*
-
-*Deep Dive Into CUDA — 2026 年 6 月*

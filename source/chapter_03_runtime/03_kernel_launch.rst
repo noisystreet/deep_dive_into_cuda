@@ -369,7 +369,3 @@ stub 中 ``__cudaSetupArgSimple`` 的偏移 (0, 8, 16, 24) 正是为此对齐。
 
 6. 4096 blocks 一次提交 — grid 配置 ``(4096, 1, 1)`` 作为整体写入命令
    缓冲区，由 GPU Warp Scheduler 逐 block 调度到 SM。
-
---------------
-
-*Deep Dive Into CUDA — 2026 年 6 月*

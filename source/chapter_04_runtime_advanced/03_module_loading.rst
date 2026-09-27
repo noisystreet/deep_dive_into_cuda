@@ -182,5 +182,3 @@ PTX JIT：进程内编译的 ioctl 代价
    管理多个文件。
 
 *分析基于 CUDA 13.1 / Driver 595.58.03。动态加载的 cubin 由 nvcc -cubin 独立编译。*
-
-*Deep Dive Into CUDA — 2026 年 6 月*

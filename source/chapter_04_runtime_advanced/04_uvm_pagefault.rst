@@ -183,5 +183,3 @@ GPU 的 UVM 页大小为 64 KB（而非 CPU 的 4 KB）。这意味着：
 
 *分析基于 CUDA 13.1 / RTX 4060 Laptop GPU / 512 MB 测试数据。实际数据
 因 GPU 型号和驱动版本而异。*
-
-*Deep Dive Into CUDA — 2026 年 6 月*

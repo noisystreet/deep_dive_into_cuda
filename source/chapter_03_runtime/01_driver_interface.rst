@@ -519,5 +519,3 @@ futex (用户态同步)     ~100+
 --------------
 
 *分析基于 CUDA 13.1 / Driver 595.58.03, GPU: sm_89 (Ada Lovelace)*
-
-*Deep Dive Into CUDA — 2026 年 6 月*

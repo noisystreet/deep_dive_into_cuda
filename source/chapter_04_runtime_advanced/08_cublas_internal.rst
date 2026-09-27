@@ -195,5 +195,3 @@ cuBLASLt 将 kernel 选择逻辑暴露给用户，支持：
 
 *分析基于 CUDA 13.1 (cuBLAS 13.2.1.1) / RTX 4060 Laptop GPU。naive GEMM*
 *仅为教学用途，实际应用中应使用 cuBLAS、CUTLASS 或 Triton。*
-
-*Deep Dive Into CUDA — 2026 年 6 月*

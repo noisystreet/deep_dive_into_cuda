@@ -366,7 +366,3 @@ PTX，需显式追加 ``CUDA_ARCHITECTURES "75;89-virtual"`` 或使用
 
 6. **驱动优先精确 SASS 匹配** — 本机 sm_89 运行 dual 配置时直接加载
    sm_89 cubin，三种配置结果均正确。
-
---------------
-
-*Deep Dive Into CUDA — 2026 年 6 月*

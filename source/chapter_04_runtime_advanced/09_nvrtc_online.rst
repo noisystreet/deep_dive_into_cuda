@@ -201,5 +201,3 @@ strace 显示 Driver API 路径的 ioctl 与 Runtime API 路径相同：
 
 *分析基于 CUDA 13.1 / Driver 595.58.03 / libnvrtc 13.1 / RTX 4060 Laptop GPU。
 NVRTC 编译时间因 kernel 复杂度而异，vec_add 为 254 ms，复杂模板可达数秒。*
-
-*Deep Dive Into CUDA — 2026 年 6 月*

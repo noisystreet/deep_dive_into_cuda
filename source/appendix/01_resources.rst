@@ -143,5 +143,3 @@ CUDA 工具手册
      - CUDA Driver API + 本书第 3 章 + ``strace``
    * - Fat Binary / cubin 文件格式
      - CUDA Binary Utilities + 本书第 1.3 节
-
-*Deep Dive Into CUDA — 2026 年 6 月*

@@ -77,6 +77,3 @@ libdevice 文件结构
    路径: /usr/local/cuda/nvvm/libdevice/libdevice.10.bc
    大小: 454,304 字节
    格式: LLVM IR Bitcode (LLVM 7.0.1)
-
-*Deep Dive Into CUDA — 2026 年 6 月*
-

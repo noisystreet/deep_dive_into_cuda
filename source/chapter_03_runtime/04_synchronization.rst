@@ -371,7 +371,3 @@ Kernel 提交（``0x4e``）与完成确认（``0x2b``）之间相隔约 **6.5 ms
    fence 轮询开销。
 
 6. 4 个 worker 线程 + 4 个 eventfd 在首次 GPU 操作时创建，程序生命周期内复用。
-
---------------
-
-*Deep Dive Into CUDA — 2026 年 6 月*

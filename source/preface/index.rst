@@ -81,5 +81,3 @@ NVRTC 在线编译等专题。
 - **示例程序**：``examples/vector_add.cu``（主线）；第 4 章另含
   ``streams_demo``、``graph_capture_demo``、``module_demo`` 等
 - **术语定义**：见 :doc:`../appendix/02_glossary`
-
-*Deep Dive Into CUDA — 2026 年 6 月*

@@ -446,5 +446,3 @@ cudafe++ 是一个 **基于 EDG C++ 6.7 前端的 CUDA
 --------------
 
 *分析基于 CUDA 13.1 (build 37061995)*
-
-*Deep Dive Into CUDA — 2026 年 6 月*

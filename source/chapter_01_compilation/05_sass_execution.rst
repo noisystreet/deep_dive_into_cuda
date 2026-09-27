@@ -315,5 +315,3 @@ memory。SASS 侧不再 ``ld.param``——launch 完成后直接读 ``c[0x0][off
 
 *分析基于 CUDA 13.1 (build 37061995)，样例 ``examples/vector_add.cu`` 与
 ``cuobjdump`` / ``nvdisasm`` 输出互证。*
-
-*Deep Dive Into CUDA — 2026 年 6 月*
