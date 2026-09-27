@@ -8,5 +8,3 @@ flowchart TB
     E --> F["cuCtxFromGreenCtx() → CUcontext"]
     F --> G["cuCtxSetCurrent()<br/>cuMemAlloc / cuLaunchKernel"]
     G --> H["cuCtxSetCurrent(primary)<br/>cuGreenCtxDestroy()"]
-    style E fill:#fff9c4
-    style P fill:#c8e6c9

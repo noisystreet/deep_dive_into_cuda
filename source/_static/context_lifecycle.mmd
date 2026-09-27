@@ -15,4 +15,3 @@ flowchart TB
     end
     INIT --> CREATE --> SWITCH
     SWITCH --> DESTROY["cuCtxDestroy<br/>close(fd) + munmap"]
-    style S1 fill:#c8e6c9

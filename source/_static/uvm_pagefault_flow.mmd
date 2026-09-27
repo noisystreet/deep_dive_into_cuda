@@ -3,5 +3,3 @@ flowchart TB
     B --> C{"后续 GPU 访问方式"}
     C -->|惰性| D["GPU touch (cudaMemset)<br/>GPU page fault → ioctl(0x4e) × N<br/>逐页迁移到 GPU 显存"]
     C -->|预取| E["cudaMemPrefetchAsync<br/>批量 DMA 迁移 (单次 ioctl)<br/>launch 期间无 page fault"]
-    style E fill:#c8e6c9
-    style D fill:#ffe0b2

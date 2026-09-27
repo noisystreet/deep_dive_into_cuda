@@ -4,6 +4,3 @@ flowchart TB
     OPT --> FIN["Finalizer (多线程, --split-compile)<br/>- Post-scheduling<br/>- Post-expansion<br/>- Sync instruction expansion<br/>- SASS binary emission"]
     FIN --> ELF["ELF Writer<br/>- .text (SASS 机器码)<br/>- .nv.info (kernel 元数据)<br/>- .nv.constant (常量 bank)<br/>- .debug_frame<br/>- .symtab"]
     ELF --> OUTPUT["SASS 输出 (ELF cubin)"]
-    style OPT fill:#fff9c4
-    style FIN fill:#c8e6c9
-    style ELF fill:#f3e5f5

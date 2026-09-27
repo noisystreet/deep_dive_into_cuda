@@ -7,7 +7,3 @@ flowchart TB
     S4 --> S5
     S5 --> S6["Step 6: 重定位<br/>- R_CUDA_* 重定位类型处理<br/>- PCREL / ABS 地址修正<br/>- 常量 bank 重定位"]
     S6 --> S7["Step 7: 最终输出<br/>- 生成单个 ELF cubin<br/>- 生成 register stub<br/>- 调用 fatbinary 打包"]
-    style S1 fill:#e3f2fd
-    style S2 fill:#fff9c4
-    style S4 fill:#c8e6c9
-    style S7 fill:#ffccbc
