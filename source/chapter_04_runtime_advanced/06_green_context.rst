@@ -64,9 +64,11 @@ API 流程
 - 使用后需 ``cuCtxSetCurrent(primary_ctx)`` 恢复，再
   ``cuGreenCtxDestroy`` 销毁。
 
-从查询 SM 资源到创建 partition 的完整流程：
+从查询 SM 资源到创建 partition 的完整流程见 :numref:`fig-greenctx-partition`。
 
 .. mermaid:: ../_static/greenctx_partition.mmd
+   :name: fig-greenctx-partition
+   :caption: 从查询 SM 资源到创建 green context partition 的流程
 
 --------------
 

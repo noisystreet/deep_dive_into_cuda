@@ -181,6 +181,8 @@ image；``code=compute_XX`` 则生成 ``kind=ptx`` 的 image。``fatbinary`` 按
 命令行顺序将它们写入容器的数据区，并在头部维护 image 目录。
 
 .. mermaid:: ../_static/multiarch_fatbinary.mmd
+   :name: fig-multiarch-fatbinary
+   :caption: 多架构 Fat Binary 的 image 目录布局
 
 --------------
 

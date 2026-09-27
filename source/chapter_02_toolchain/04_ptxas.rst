@@ -206,6 +206,8 @@ ptxas 采用 **两阶段 (Two-Phase)** 架构：
 ~~~~~~~~~~~~
 
 .. mermaid:: ../_static/ptxas_architecture.mmd
+   :name: fig-ptxas-architecture
+   :caption: ptxas 的两阶段架构与整体流程
 
 后端优化 Pass Pipeline
 ~~~~~~~~~~~~~~~~~~~~~~~~~~

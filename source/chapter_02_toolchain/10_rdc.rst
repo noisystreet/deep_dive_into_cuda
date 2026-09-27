@@ -76,6 +76,8 @@ CMake 等价写法：
 ----------------
 
 .. mermaid:: ../_static/rdc_flow.mmd
+   :name: fig-rdc-flow
+   :caption: WPC 与 RDC 编译流水线对比
 
 WPC：单 TU vector_add.cu（回顾）
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

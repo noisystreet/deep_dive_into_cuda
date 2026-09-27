@@ -53,9 +53,11 @@ strace 显示 cuBLAS 的加载过程：
    ioctl(0x2b) × 3     ← fence
    ; 无额外的 mmap — cuBLAS 使用 cudaMalloc 分配 workspace
 
-从应用到 GPU 的库分层与 kernel 选择路径：
+从应用到 GPU 的库分层与 kernel 选择路径见 :numref:`fig-cublas-dispatch`。
 
 .. mermaid:: ../_static/cublas_dispatch.mmd
+   :name: fig-cublas-dispatch
+   :caption: cuBLAS 的库分层与 kernel 选择路径
 
 --------------
 

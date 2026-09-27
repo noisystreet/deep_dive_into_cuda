@@ -362,6 +362,8 @@ NVCC (NVIDIA CUDA Compiler) 将 ``.cu``
 ------------
 
 .. mermaid:: ../_static/compilation_journey.mmd
+   :name: fig-compilation-journey
+   :caption: vector_add 从源码到可执行文件的完整编译旅程
 
 两条编译路径
 ~~~~~~~~~~~~
@@ -401,6 +403,8 @@ NVCC (NVIDIA CUDA Compiler) 将 ``.cu``
 ------------
 
 .. mermaid:: ../_static/compilation_pipeline.mmd
+   :name: fig-compilation-pipeline
+   :caption: nvcc 编译流水线：Host 路径、Device 路径与链接路径
 
 动态: 步骤 7-8 的顺序在实际执行中可能有所不同，取决于 nvcc 的链接策略。
 

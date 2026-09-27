@@ -14,9 +14,11 @@ g++ 链接阶段：Fat Binary 如何进入可执行文件
 两阶段链接概览
 ----------------
 
-CMake 对 ``add_executable(vector_add vector_add.cu)`` 的处理分为两步：
+CMake 对 ``add_executable(vector_add vector_add.cu)`` 的处理分为两步，见 :numref:`fig-host-link`。
 
 .. mermaid:: ../_static/host_link.mmd
+   :name: fig-host-link
+   :caption: 主机端两阶段链接概览
 
 阶段 A：nvcc -c（device + host 合并在同一目标文件）
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

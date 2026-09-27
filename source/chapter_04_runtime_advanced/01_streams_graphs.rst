@@ -40,6 +40,8 @@ Stream 的本质
 stream ID 实现逻辑隔离。
 
 .. mermaid:: ../_static/streams_flow.mmd
+   :name: fig-streams-flow
+   :caption: 默认 stream、并发 stream 与 stream 间依赖
 
 默认 stream 的阻塞语义
 ~~~~~~~~~~~~~~~~~~~~~~~
@@ -87,6 +89,8 @@ CUDA Graphs 提供了一种将多个 kernel launch 打包为单个计算图的�
 本节重点分析其**实例化**和**启动**两个阶段的系统调用特征。
 
 .. mermaid:: ../_static/graph_sequence.mmd
+   :name: fig-graph-sequence
+   :caption: 普通 launch、同步与 CUDA Graph 的时序对比
 
 捕获阶段：零额外开销
 ~~~~~~~~~~~~~~~~~~~~~

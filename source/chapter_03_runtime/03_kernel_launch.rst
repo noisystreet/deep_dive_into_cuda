@@ -268,6 +268,8 @@ Launch 之后，Runtime 创建 ``eventfd`` 并 ``clone3`` 启动 worker 线程�
 则通过 ``ioctl(0x2b)`` 阻塞等待 GPU fence。
 
 .. mermaid:: ../_static/kernel_launch_flow.mmd
+   :name: fig-kernel-launch-flow
+   :caption: Kernel Launch 从 libcudart 到 GPU 的完整流程
 
 --------------
 
@@ -275,6 +277,8 @@ Launch 之后，Runtime 创建 ``eventfd`` 并 ``clone3`` 启动 worker 线程�
 ----------
 
 .. mermaid:: ../_static/kernel_launch_call_stack.mmd
+   :name: fig-kernel-launch-call-stack
+   :caption: Kernel Launch 的完整调用链
 
 按时间顺序串起来：
 

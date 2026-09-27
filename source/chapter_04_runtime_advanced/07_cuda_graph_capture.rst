@@ -33,9 +33,11 @@ GPU 空闲时间。CUDA Graph 的核心优化：
 - **实例化**：将捕获的命令图编译为 GPU 可执行的调度单元
 - **重放**：一次提交整张图，多次 kernel launch 合并为 1 次 ioctl
 
-从 capture 到重放的三个阶段及 ioctl 变化：
+从 capture 到重放的三个阶段及 ioctl 变化见 :numref:`fig-graph-capture-flow`。
 
 .. mermaid:: ../_static/graph_capture_flow.mmd
+   :name: fig-graph-capture-flow
+   :caption: CUDA Graph 捕获、实例化与重放三阶段的 ioctl 变化
 
 --------------
 

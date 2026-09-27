@@ -175,6 +175,8 @@ nvlink 核心链接过程
 ~~~~~~~~~~~~~~~~
 
 .. mermaid:: ../_static/nvlink_flow.mmd
+   :name: fig-nvlink-flow
+   :caption: nvlink 设备端链接流程总览
 
 链接类型
 ~~~~~~~~~~~~

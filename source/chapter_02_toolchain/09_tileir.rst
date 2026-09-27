@@ -190,6 +190,8 @@ nvTileIR 编译 API
 ------------------------
 
 .. mermaid:: ../_static/tileir_entry.mmd
+   :name: fig-tileir-entry
+   :caption: TileIR 的编译工具链入口
 
 入口 1：cicc 与 ``__tile__`` 源码
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

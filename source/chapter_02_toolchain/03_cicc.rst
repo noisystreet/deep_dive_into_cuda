@@ -54,9 +54,11 @@ cicc 的依赖非常轻量，它实际的核心功能依赖通过 ``dlopen``
 NVVM 三层架构
 ----------------
 
-cicc 内部基于 **NVVM (NVIDIA Virtual Machine)** 框架，分为三层：
+cicc 内部基于 **NVVM (NVIDIA Virtual Machine)** 框架，分为三层，见 :numref:`fig-cicc-architecture`。
 
 .. mermaid:: ../_static/cicc_architecture.mmd
+   :name: fig-cicc-architecture
+   :caption: cicc 的 NVVM 三层架构
 
 libnvvm.so — 编译核心库
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~

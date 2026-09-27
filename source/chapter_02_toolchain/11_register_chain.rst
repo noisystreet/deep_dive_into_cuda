@@ -303,6 +303,8 @@ WPC 与 RDC 注册对比
 --------------------------------
 
 .. mermaid:: ../_static/register_chain.mmd
+   :name: fig-register-chain
+   :caption: 从注册到 Launch 的完整时间线
 
 .. list-table::
    :header-rows: 1

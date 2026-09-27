@@ -115,6 +115,8 @@ SASS 执行分析
 --------------------------------------
 
 .. mermaid:: ../_static/sass_execution.mmd
+   :name: fig-sass-execution
+   :caption: 一个 warp 在 SM 上执行 kernel 的指令流
 
 SIMT 三原则（结合本 kernel 验证）：
 

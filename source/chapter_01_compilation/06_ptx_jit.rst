@@ -150,6 +150,8 @@ PTX-only 可执行文件比 single **小约 29 KB**——主要少在 cubin 机�
 --------------------------------
 
 .. mermaid:: ../_static/ptx_jit_flow.mmd
+   :name: fig-ptx-jit-flow
+   :caption: 运行时驱动选择 cubin 或 PTX JIT 的决策流程
 
 简化决策（在 ``__cudaRegisterFatBinary`` 内，见 :doc:`../chapter_02_toolchain/11_register_chain`）：
 

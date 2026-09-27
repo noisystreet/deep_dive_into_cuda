@@ -41,9 +41,11 @@ UVM 的惰性分配模型
 strace 中的 ``ioctl(0x4e)`` 在 UVM 场景下同时服务于两种功能：普通
 kernel launch (DMA) 和 page fault 处理。区分它们需要结合时间戳上下文。
 
-惰性分配与预取两条路径的对比：
+惰性分配与预取两条路径的对比见 :numref:`fig-uvm-pagefault-flow`。
 
 .. mermaid:: ../_static/uvm_pagefault_flow.mmd
+   :name: fig-uvm-pagefault-flow
+   :caption: UVM 的惰性分配与预取两条路径
 
 --------------
 

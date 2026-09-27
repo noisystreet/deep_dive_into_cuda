@@ -11,8 +11,10 @@ kernel，但不一定知道 **编译器把源码变成了什么**，**运行时�
 本书从 ``examples/vector_add.cu`` 出发，用一份仅 489 字节的向量加法程序，贯穿以下完整链路：
 
 .. mermaid:: ../_static/arch_overview.mmd
+   :name: fig-arch-overview
+   :caption: vector_add 贯通五层的全景图：源码、编译、工具链、运行时与驱动
 
-上图展示了五个层次。下面逐层说明各章如何展开分析。
+:numref:`fig-arch-overview` 展示了五个层次。下面逐层说明各章如何展开分析。
 
 全书结构
 --------

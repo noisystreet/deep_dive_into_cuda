@@ -135,13 +135,17 @@ cudafe++ 不使用 ``--help``\ ，而是通过命令行参数配置。从 verbos
 ~~~~~~~~~~~~
 
 .. mermaid:: ../_static/cudafe_architecture.mmd
+   :name: fig-cudafe-architecture
+   :caption: cudafe++ 的整体架构：包装层与 EDG 前端
 
 三个输出文件
 ~~~~~~~~~~~~~~~~
 
-cudafe++ 从同一个输入同时生成 **三个输出文件**\ ：
+cudafe++ 从同一个输入同时生成 **三个输出文件**，见 :numref:`fig-cudafe-outputs`。
 
 .. mermaid:: ../_static/cudafe_outputs.mmd
+   :name: fig-cudafe-outputs
+   :caption: cudafe++ 由同一输入派生的输出文件
 
 --------------
 

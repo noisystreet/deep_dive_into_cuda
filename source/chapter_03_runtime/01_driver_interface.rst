@@ -199,6 +199,8 @@ UVM 通道 IOCTL (fd 25 = /dev/nvidia-uvm)
 ===================== ===========================
 
 .. mermaid:: ../_static/ioctl_pie.mmd
+   :name: fig-ioctl-distribution
+   :caption: vector_add 运行时 IOCTL 命令分布（410 次）
 
 --------------
 
@@ -244,9 +246,11 @@ GPU 显存分配
    cudaMalloc(&d_c, 4MB)    → ioctl(NV_DEV_IOCTL(0x2a)) + mmap
 
 驱动程序内部管理 GPU 显存，通过 ioctl 向内核模块请求分配，内核模块在 GPU
-BAR 中划分物理页。下图串联了 ``cudaMalloc`` 从用户态到 GPU 显存的完整路径：
+BAR 中划分物理页。:numref:`fig-memory-layout` 串联了 ``cudaMalloc`` 从用户态到 GPU 显存的完整路径：
 
 .. mermaid:: ../_static/memory_layout.mmd
+   :name: fig-memory-layout
+   :caption: cudaMalloc 从用户态到 GPU 显存的完整路径
 
 --------------
 
@@ -257,6 +261,8 @@ Kernel Launch 流程
 ~~~~~~~~~~~~~~~~~~~~~~
 
 .. mermaid:: ../_static/kernel_launch_flow.mmd
+   :name: fig-kernel-launch-flow-driver
+   :caption: cudaLaunchKernel 的运行时调用流程
 
 同步机制
 ~~~~~~~~~~~~
@@ -507,6 +513,8 @@ futex (用户态同步)     ~100+
    次系统调用、410 次 IOCTL
 
 .. mermaid:: ../_static/runtime_call_chain.mmd
+   :name: fig-runtime-call-chain
+   :caption: vector_add 运行时的用户态—驱动—内核—GPU 调用链
 
 --------------
 

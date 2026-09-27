@@ -348,6 +348,8 @@ cicc 将 device 代码编译为 PTX，这是 GPU 指令集的虚拟中间表示�
 ----------
 
 .. mermaid:: ../_static/intermediate_dataflow.mmd
+   :name: fig-intermediate-dataflow
+   :caption: 编译中间产物的完整数据流
 
 关键发现
 --------

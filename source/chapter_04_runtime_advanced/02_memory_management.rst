@@ -49,9 +49,11 @@ GPU 通过 PCIe BAR (Base Address Register) 将显存暴露给 CPU。
 - ``---p`` (PROT_NONE) 区域是 **GPU 预留地址空间**——它们占位但不分配
   物理页面，访问会触发 segment fault。
 
-四种分配 API 的底层路径总览：
+四种分配 API 的底层路径总览见 :numref:`fig-memory-alloc-paths`。
 
 .. mermaid:: ../_static/memory_alloc_paths.mmd
+   :name: fig-memory-alloc-paths
+   :caption: 四种分配 API 的底层路径总览
 
 --------------
 

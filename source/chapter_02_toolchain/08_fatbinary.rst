@@ -157,6 +157,8 @@ nvcc 如何调用 fatbinary
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. mermaid:: ../_static/fatbinary_tool_flow.mmd
+   :name: fig-fatbinary-tool-flow
+   :caption: 完整链接中 fatbinary 工具的两次调用
 
 第 1 次 — 与 ``-c`` 相同，打包模块级 PTX + cubin，生成 ``vector_add.o``（含
 ``.nv_fatbin`` 4064 B）。

@@ -488,6 +488,8 @@ cubin vs fatbin 对比
    -  不匹配 → 用 PTX JIT 编译为当前硬件指令
 
 .. mermaid:: ../_static/fatbinary_hierarchy.mmd
+   :name: fig-fatbinary-hierarchy
+   :caption: Fat Binary 容器层次结构与运行时 image 选择
 
 --------------
 

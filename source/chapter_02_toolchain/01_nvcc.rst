@@ -264,11 +264,15 @@ nvcc 内部架构推测
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. mermaid:: ../_static/nvcc_architecture.mmd
+   :name: fig-nvcc-architecture
+   :caption: nvcc 驱动的整体架构（基于字符串分析推测）
 
 编译阶段决策流程
 ~~~~~~~~~~~~~~~~~~~~
 
 .. mermaid:: ../_static/phase_decision.mmd
+   :name: fig-nvcc-phase-decision
+   :caption: nvcc 的编译阶段决策流程
 
 文件扩展名路由
 ~~~~~~~~~~~~~~~~~~

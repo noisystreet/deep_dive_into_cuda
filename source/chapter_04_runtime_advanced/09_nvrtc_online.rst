@@ -29,9 +29,11 @@ NVRTC 在线编译：进程内编译 vs nvcc 子进程
    两个路径的差别类似 GCC 和 LLVM JIT 的区别——前者产生持久化文件，
    后者在内存中完成所有编译。
 
-两条编译路径的完整对比：
+两条编译路径的完整对比见 :numref:`fig-nvrtc-flow`。
 
 .. mermaid:: ../_static/nvrtc_flow.mmd
+   :name: fig-nvrtc-flow
+   :caption: 离线编译与 NVRTC 在线编译两条路径对比
 
 --------------
 

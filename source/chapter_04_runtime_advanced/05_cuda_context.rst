@@ -28,9 +28,11 @@ Context 是 GPU 的 CPU 侧 "进程"——每个 context 对应一个独立的 G
 - 已加载的模块（``cuModuleLoad`` 的 cubin）
 - Stream 和 event 映射
 
-Context 从初始化到销毁的完整生命周期：
+Context 从初始化到销毁的完整生命周期见 :numref:`fig-context-lifecycle`。
 
 .. mermaid:: ../_static/context_lifecycle.mmd
+   :name: fig-context-lifecycle
+   :caption: Context 从初始化到销毁的完整生命周期
 
 --------------
 

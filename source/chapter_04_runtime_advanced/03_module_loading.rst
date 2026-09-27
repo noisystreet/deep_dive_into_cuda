@@ -46,9 +46,11 @@ cuModule 动态加载：Driver API 的运行时编译路径
      - **运行时** 进程内
        NVVM JIT 编译
 
-三条路径在编译时机与运行期开销上的差异：
+三条路径在编译时机与运行期开销上的差异见 :numref:`fig-module-load-paths`。
 
 .. mermaid:: ../_static/module_load_paths.mmd
+   :name: fig-module-load-paths
+   :caption: 静态链接、动态 cubin 与 PTX JIT 三条加载路径
 
 离线编译的子进程问题
 -----------------------

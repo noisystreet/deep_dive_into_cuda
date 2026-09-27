@@ -100,3 +100,14 @@ html_css_files = ['custom.css']
 
 autosectionlabel_prefix_document = True
 todo_include_todos = True
+
+# 图表编号与交叉引用：配合图上的 ``:name:`` / ``:caption:`` 生成 "图 X.Y"，
+# 正文用 ``:numref:`label``` 引用。
+numfig = True
+numfig_secnum_depth = 1
+numfig_format = {
+    'figure': '图 %s',
+    'table': '表 %s',
+    'code-block': '代码 %s',
+    'section': '第 %s 节',
+}

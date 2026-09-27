@@ -212,6 +212,8 @@ Stream 排空后，主线程对 ``/dev/nvidia0`` (fd=10) 连续 3 次 fence 查�
 ``cudaDeviceSynchronize`` 耗时约 6.5 ms（含 4096 block 的 kernel 执行时间）。
 
 .. mermaid:: ../_static/sync_mechanism.mmd
+   :name: fig-sync-mechanism
+   :caption: cudaDeviceSynchronize 的 fence 轮询与 worker 通知机制
 
 --------------
 

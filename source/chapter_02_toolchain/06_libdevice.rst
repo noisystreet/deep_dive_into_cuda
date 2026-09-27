@@ -39,10 +39,12 @@ cicc 收到 ``cpp1.ii`` 后，在 NVVM 框架内完成：
 3. 运行 NVVM / LLVM Pass（内联、DCE、常量折叠等）
 4. 生成 ``*.ptx``
 
-下图展示 ``libdevice.10.bc`` 如何在编译期被按需链接进用户 LLVM IR 模块，
+:numref:`fig-libdevice-link` 展示了 ``libdevice.10.bc`` 如何在编译期被按需链接进用户 LLVM IR 模块，
 并在 Pass 管线后从最终 PTX 中消失：
 
 .. mermaid:: ../_static/libdevice_link.mmd
+   :name: fig-libdevice-link
+   :caption: libdevice.10.bc 在编译期的按需链接与内联
 
 关键发现
 -----------
