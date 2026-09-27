@@ -27,13 +27,16 @@
    NVVM
       NVIDIA Virtual Machine，基于 LLVM 7.0.1 的编译框架。
       将 CUDA C++ device 代码降为 LLVM IR，运行定制 Pass 后，
-      通过 NVPTX 后端输出 PTX。cicc 的上层包装调用 libnvvm.so
-      中的 NVVM API。
+      通过 NVPTX 后端输出 PTX。cicc 自带完整的 NVVM 实现，并不
+      加载 ``libnvvm.so``；后者是 NVIDIA 平行分发的等价 NVVM
+      C API，供外部工具（如 nvlink 做 LTO）复用。
 
    cicc
       CUDA Intermediate Code Compiler，将 CUDA C++ 编译为 PTX。
-      基于 NVVM/LLVM 框架，内部通过 ``dlopen`` 加载 ``libnvvm.so``
-      （61 MB）和 ``libdevice.10.bc`` （454 KB，内置数学函数）。
+      自包含的编译器：NVVM/LLVM 编译核心静态编入自身
+      （``.text`` 约 58.7 MB），运行期不加载 ``libnvvm.so``；
+      唯一的 ``dlopen`` 目标是可选插件 ``libTileIRCompiler_shared.so``。
+      按需链接 ``libdevice.10.bc`` （454 KB，内置数学函数）。
 
    ptxas
       PTX Assembler，将 PTX 编译为 SASS 机器码。**两阶段架构**：

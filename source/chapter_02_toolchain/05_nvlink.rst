@@ -37,7 +37,7 @@ NVLINK 分析：CUDA Device 链接器
 
 **关键发现**: nvlink 通过 ``dlopen`` 动态加载关键功能库，包括： -
 ``libnvvm.so`` — LTO 模式下调用 NVVM 编译器进行链接时优化 -
-``libnvidia-tileiras.so`` — TileIR JIT 编译（Driver 590.56 附带的大库）
+``libnvidia-tileiras.so`` — TileIR JIT 编译（驱动侧安装的大库，见 :doc:`09_tileir`）
 
 符号与动态加载线索（实测）
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -66,7 +66,7 @@ nvlink 的动态符号表与内嵌字符串两个层面得到印证：
 ::
 
    libnvvm.so                                 ← LTO 时加载
-   libnvidia-tileiras.so.590.56               ← TileIR JIT 时加载（带 Driver 版本号）
+   libnvidia-tileiras.so.590.56               ← 内嵌的 TileIR 库名（构建期预期版本）
    nvvmpath                                   ← 选项 "Path to libnvvm library."
    Can't JIT TileIR without libtileiras       ← 缺少 TileIR 库时的报错
    __nvvmHandle / nvvmCompileProgram          ← 通过 dlsym 解析的 NVVM C API
@@ -76,9 +76,10 @@ nvlink 的动态符号表与内嵌字符串两个层面得到印证：
 运行时加载原语，且二进制中保留着 ``libnvvm.so`` 与
 ``libnvidia-tileiras.so.590.56`` 的库名。链接器在编译期无从知道用户会不会
 启用 LTO（需要 libnvvm.so）或 TileIR（需要 tileiras 库），因此采用"按需
-dlopen"的设计以对这些可选组件保持 **弱耦合**：不启用就不加载。注意 TileIR
-库的名字带 Driver 版本号（``.590.56``），说明它的加载路径与已安装的驱动
-版本绑定。
+dlopen"的设计以对这些可选组件保持 **弱耦合**\ ：不启用就不加载。内嵌字符串
+里的 ``.590.56`` 是 CTK 13.1 构建时预期的 TileIR 库版本；本机驱动 595.58.03
+实际安装的是 ``libnvidia-tileiras.so.595.58.03``，二者并不一致——该内嵌名字
+在本机无法直接 ``dlopen``，实际加载时必须另行解析（详见 :doc:`09_tileir`）。
 
 **三家对照**: 三个二进制对动态加载的依赖程度截然不同——nvlink 导入完整的
 ``dlopen``/``dlsym``/``dlclose`` 三元组并内嵌可选库名；cicc 也导入三者，

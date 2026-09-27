@@ -86,8 +86,18 @@ libnvvm.so）。nvlink 字符串中的
 
    Can't JIT TileIR without libtileiras
 
-是逻辑名；实际解析的 soname 模式为 libnvidia-tileiras.so.590.56
-（主版本随驱动变化，本机为 …595.58.03）。
+是逻辑名。实测 nvlink 内嵌的库名字符串为 ``libnvidia-tileiras.so.590.56``，
+这是 CTK 13.1 **构建期**\ 预期的版本。本机驱动 595.58.03 实际安装的是
+``libnvidia-tileiras.so.595.58.03``（97,276,648 B），目录下并没有名为
+``.590.56`` 的文件；用 ``ctypes.CDLL`` 直接加载两个字面名的结果如下：
+
+::
+
+   libnvidia-tileiras.so.590.56    → cannot open shared object file
+   libnvidia-tileiras.so.595.58.03 → OK
+
+可见 nvlink 无法按内嵌名字直接加载，运行期必须另行解析实际库名
+（例如拼接已安装驱动的版本号）。
 
 nm -D libnvidia-tileiras.so 导出与 nvlink/fatbinary 字符串一致的
 nvTileIR API——说明 CLI 与驱动库共享同一套 TileIR 编译接口。

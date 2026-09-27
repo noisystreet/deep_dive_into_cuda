@@ -3,7 +3,9 @@ libnvvm / libdevice 深度分析
 
    第 2.3 节已从架构层面介绍 cicc、libnvvm.so 与 libdevice.10.bc。
    本节聚焦 **libdevice 如何在编译期被链接、优化并消失于最终 PTX**，
-   以及 libnvvm API 在其中的角色。
+   以及 NVVM 编译框架在其中的角色。注意：cicc 自带 NVVM 实现，并不
+   加载 ``libnvvm.so``；后者是供外部工具复用的独立 C API
+   （详见 :doc:`03_cicc`）。
 
    分析基于 CUDA 13.1 (build 37061995)，主线程序 ``examples/vector_add.cu``，
    对照实验 ``sinf(x)`` kernel。
