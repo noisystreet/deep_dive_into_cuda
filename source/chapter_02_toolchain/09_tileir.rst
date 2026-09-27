@@ -102,6 +102,72 @@ libnvvm.so）。nvlink 字符串中的
 nm -D libnvidia-tileiras.so 导出与 nvlink/fatbinary 字符串一致的
 nvTileIR API——说明 CLI 与驱动库共享同一套 TileIR 编译接口。
 
+符号与调用图线索（实测）
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+用 ``analyze_binaries.py`` 对两个物理文件做 elf/symbols/calls 三段实测，
+得到下表（``python3 scripts/analyze_binaries.py report --target <path>``）：
+
+.. list-table:: tileiras CLI 与 libnvidia-tileiras 的 ELF 指纹对照（实测）
+   :header-rows: 1
+   :widths: 26 26 26
+
+   * - 指标
+     - ``bin/tileiras``
+     - ``libnvidia-tileiras.so``
+   * - 文件大小
+     - 91,451,032 B (87.2 MiB)
+     - 97,276,648 B (92.8 MiB)
+   * - ELF 类型
+     - **ET_EXEC**\ （固定地址）
+     - ET_DYN（共享库）
+   * - 入口地址
+     - 0x57571c
+     - 0x28efa0
+   * - ``.text`` 大小
+     - 69,077,169 B @0x405f70
+     - 71,441,169 B @0x28efa0
+   * - ``.text`` 占文件
+     - 75.5%
+     - 73.4%
+   * - 动态符号
+     - 267（导入 266 / 导出 0）
+     - 286（导入 272 / 导出 13）
+   * - 导入的 libdl 家族
+     - ``dlopen``/``dlsym``/``dlclose``/``dladdr``/``dl_iterate_phdr``/``dlerror``
+     - 同上
+   * - dynsym 含 ``nvvm*``
+     - 否
+     - 否
+   * - 直接 ``call`` 指令
+     - 941,949 处 / 55,902 目标
+     - 975,465 处 / 59,084 目标
+   * - PLT 桩（外部）
+     - 233 个
+     - 235 个
+   * - 外部调用占比
+     - 8.9%
+     - 9.1%
+   * - 外部 Top 1
+     - ``free`` 54,117
+     - ``free`` 56,870
+
+两点值得注意：
+
+* **tileiras CLI 是全项目唯一 ET_EXEC 组件**。nvcc、cicc、ptxas、
+  cudafe++ 等均为 ET_DYN（PIE），而 tileiras 被编译成固定地址可执行文件
+  （入口 0x57571c，节区地址均非零基址）。这意味着它 **不能**\ 作为
+  共享库被 dlopen 复用——驱动侧才用 ET_DYN 的 ``libnvidia-tileiras.so``。
+* 两者的调用图高度同构：``free``/``malloc``/``memcpy``/``memmove``
+  稳居外部被调前四，外部占比都压在 **9%**\ 上下。这与 tileiras 承担的
+  「TileIR 中间表示遍历与改写」职责一致——**内存管理密集、外部依赖轻**。
+
+`SetPTXCompiler` 所暗示的耦合也能在符号层印证：``libnvidia-tileiras.so``
+导出 13 个 ``nvTileIR*`` 符号（见上文 C API 序列），其 dynsym 中却
+**不含** ``nvvm*`` 符号，且导入完整 ``dlopen`` 家族——说明它与 libnvvm /
+ptxas 之间同样是 **运行期 dlopen 弱耦合**，与 :doc:`03_cicc` 中
+cicc ↔ libnvvm 的耦合方式一致，而非静态链接。
+
 --------------
 
 tileiras 命令行工具

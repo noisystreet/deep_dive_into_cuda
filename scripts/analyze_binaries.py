@@ -20,6 +20,10 @@
     # angr 控制流图（较重，默认只分析 .text 前若干字节，可用 --full 全量）
     python scripts/analyze_binaries.py angr    --target ptxas --max-bytes 2000000
 
+    # 调用图为流式解码；对超大 .text 可再加 --max-bytes 限制每节区解码量
+    python scripts/analyze_binaries.py calls   --target /usr/local/cuda/bin/tileiras \
+        --max-bytes 8000000
+
 依赖：pyelftools、capstone；angr 仅 "angr" 子命令需要。
 """
 
@@ -244,7 +248,7 @@ def cmd_xref(path: Path, patterns) -> None:
         for sec in elf.iter_sections():
             if not (sec["sh_flags"] & SHF_EXECINSTR):
                 continue
-            for insn in md.disasm(sec.data(), sec["sh_addr"]):
+            for insn in iter_insns(f, sec, md):
                 if not insn.operands:
                     continue
                 for op in insn.operands:
@@ -278,6 +282,30 @@ def cmd_xref(path: Path, patterns) -> None:
 # ---------------------------------------------------------------------------
 
 
+def iter_insns(f, sec, md, max_bytes: int | None = None, chunk_size: int = 4 << 20):
+    """按块从文件流式解码可执行节区，避免整段读入内存。
+
+    以 ``chunk_size``（默认 4 MiB）为单位读取；若某块在指令中途结束，
+    则回退到块内最后一条完整指令的末尾续读，保证与整段解码结果一致。
+    对超大 ``.text``（如 tileiras 的 69 MB）可将峰值内存压到常数级。
+    """
+    remaining = sec["sh_size"] if max_bytes is None else min(sec["sh_size"], max_bytes)
+    f.seek(sec["sh_offset"])
+    base = sec["sh_addr"]
+    while remaining > 0:
+        data = f.read(min(chunk_size, remaining))
+        if not data:
+            break
+        consumed = 0
+        for insn in md.disasm(data, base):
+            consumed = insn.address + insn.size - base
+            yield insn
+        step = consumed if consumed > 0 else len(data)
+        f.seek(step - len(data), 1)   # 回退未用到的尾部字节
+        base += step
+        remaining -= step
+
+
 def build_plt_map(elf):
     """返回 {plt_stub_addr: symbol_name}。兼容 .plt.sec 与 .plt。"""
     m = {}
@@ -304,8 +332,8 @@ def build_plt_map(elf):
     return m
 
 
-def collect_direct_calls(elf):
-    """返回 (callee_addr -> count) 与 (call_site -> callee)。"""
+def collect_direct_calls(f, elf, max_bytes: int | None = None):
+    """返回 (callee_addr -> count)。流式解码，避免整段 .text 占用内存。"""
     counter = Counter()
     md = capstone.Cs(capstone.CS_ARCH_X86, capstone.CS_MODE_64)
     md.detail = True
@@ -313,7 +341,7 @@ def collect_direct_calls(elf):
     for sec in elf.iter_sections():
         if not (sec["sh_flags"] & SHF_EXECINSTR):
             continue
-        for insn in md.disasm(sec.data(), sec["sh_addr"]):
+        for insn in iter_insns(f, sec, md, max_bytes):
             if insn.mnemonic != "call" or not insn.operands:
                 continue
             op = insn.operands[0]
@@ -322,14 +350,16 @@ def collect_direct_calls(elf):
     return counter
 
 
-def cmd_calls(path: Path, top: int) -> None:
+def cmd_calls(path: Path, top: int, max_bytes: int | None = None) -> None:
     with open(path, "rb") as f:
         elf = ELFFile(f)
         plt = build_plt_map(elf)
-        calls = collect_direct_calls(elf)
+        calls = collect_direct_calls(f, elf, max_bytes)
 
     total_sites = sum(calls.values())
     print(f"=== 静态调用图: {path.name} ===")
+    if max_bytes:
+        print(f"(仅统计每个可执行节区前 {human(max_bytes)} 字节)")
     print(f"直接 call 指令      : {human(total_sites)} 处")
     print(f"不同被调目标        : {human(len(calls))} 个")
     print(f"其中 PLT 桩(外部)   : {human(len(plt))} 个")
@@ -429,8 +459,12 @@ def main() -> None:
         help="逗号分隔的自定义字符串（默认使用 NVVM API 一组）",
     )
 
-    p_calls = add("calls", "静态直接调用图")
+    p_calls = add("calls", "静态直接调用图（流式解码，可用 --max-bytes 限流）")
     p_calls.add_argument("--top", type=int, default=15, help="每类展示条数")
+    p_calls.add_argument(
+        "--max-bytes", type=int, default=None,
+        help="每个可执行节区最多解码的字节数（超大 .text 防 OOM）",
+    )
 
     p_angr = add("angr", "angr CFGFast 控制流图")
     p_angr.add_argument("--max-bytes", type=int, default=2_000_000, help="默认分析字节数")
@@ -438,6 +472,10 @@ def main() -> None:
 
     p_rep = add("report", "依次执行 elf + symbols + xref + calls")
     p_rep.add_argument("--top", type=int, default=15)
+    p_rep.add_argument(
+        "--max-bytes", type=int, default=None,
+        help="calls 阶段每个可执行节区最多解码的字节数（防 OOM）",
+    )
 
     args = ap.parse_args()
     path = resolve_target(args.target)
@@ -456,7 +494,7 @@ def main() -> None:
         )
         cmd_xref(path, patterns)
     elif args.cmd == "calls":
-        cmd_calls(path, args.top)
+        cmd_calls(path, args.top, args.max_bytes)
     elif args.cmd == "angr":
         cmd_angr(path, args.max_bytes, args.full)
     elif args.cmd == "report":
@@ -466,7 +504,7 @@ def main() -> None:
         print()
         cmd_xref(path, DEFAULT_XREF_PATTERNS)
         print()
-        cmd_calls(path, args.top)
+        cmd_calls(path, args.top, args.max_bytes)
 
 
 if __name__ == "__main__":

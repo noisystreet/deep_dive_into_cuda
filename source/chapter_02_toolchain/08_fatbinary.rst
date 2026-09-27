@@ -74,6 +74,58 @@ nvlink，但处在 device 编译链的 **最后一环（打包）** 与 host 链
 
 与 ptxas、nvlink 一样，**不依赖** ``libcudart`` / ``libcuda``，纯 host 端离线工具。
 
+符号与调用图线索（实测）
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+``fatbinary`` 与其姊妹工具 ``nvprune`` 都是「纯容器 / 裁剪」类小程序，
+ELF 指纹高度一致。并排对比如下：
+
+.. list-table:: fatbinary 与 nvprune 的 ELF 指纹对照（实测）
+   :header-rows: 1
+   :widths: 24 24 24
+
+   * - 指标
+     - fatbinary
+     - nvprune
+   * - 文件大小
+     - 1,309,648 B (1.2 MiB)
+     - 125,496 B (0.1 MiB)
+   * - ELF 类型
+     - ET_DYN (PIE)
+     - ET_DYN (PIE)
+   * - strip 状态
+     - 已剥离
+     - 已剥离
+   * - ``.text`` 段
+     - 1,006,850 B (占文件 77.0%)
+     - 81,586 B (占文件 65.8%)
+   * - 动态符号 ``.dynsym``
+     - 142（导入 139 / 导出 2）
+     - 69（导入 66 / 导出 2）
+   * - 动态加载线索 (libdl)
+     - 无
+     - 无
+   * - 直接 ``call`` 指令
+     - 8,670 处
+     - 1,827 处
+   * - 不同被调目标
+     - 1,044 个
+     - 229 个
+   * - 外部调用占比
+     - 20.7%
+     - 21.7%
+   * - 外部调用 Top 3
+     - ``_Unwind_Resume`` (244)、``__nl_langinfo_l`` (214)、``memcpy`` (196)
+     - ``memcpy`` (40)、``__stack_chk_fail`` (36)、``fprintf`` (25)
+
+**发现**: 两个工具的 ``.dynsym`` 里都没有 ``nvvm*`` 符号，也没有
+``dlopen`` / ``dlsym``，且体积极小（1.2 MiB / 0.1 MiB）——它们是
+**纯容器 / 裁剪工具**\ ，自身不含任何编译核心，只负责把 device image
+搬进 / 搬出 fatbin 容器。两者的外部调用占比都超过 20%（远高于 nvcc
+的 1.3%），而外部 Top 是 ``_Unwind_Resume``、``__nl_langinfo_l``、
+``memcpy`` 这类通用 host 运行库符号，而非任何 device 编译相关符号，
+进一步印证其「薄壳」性质。
+
 内部 API（strings 提取）
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 

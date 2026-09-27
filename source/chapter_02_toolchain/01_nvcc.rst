@@ -83,6 +83,50 @@ nvcc 是一个 **剥离 (stripped)**
    Cuda compilation tools, release 13.1, V13.1.115
    Build cuda_13.1.r13.1/compiler.37061995_0
 
+符号与调用图线索（实测）
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+用 pyelftools 读取 ELF 头与动态符号表，再用 capstone 遍历 ``.text``
+中的全部 ``call`` 指令，得到如下真实数据：
+
+::
+
+   文件大小:    33,371,544 字节 (31.8 MiB)
+   ELF 类型:    ET_DYN (PIE，参与 ASLR)
+   strip 状态:  已剥离（无 .symtab，仅剩 .dynsym）
+   .text 段:    25,394,642 字节 @0x171720（占文件 76.1%）
+
+   动态符号表 (.dynsym):  共 201 个
+     导入 (UND):  197
+     导出:          3
+   动态加载线索 (libdl):  无（不含 dlopen / dlsym / dlclose）
+
+   直接 call 指令:      517,670 处
+   不同被调目标:        19,712 个
+   其中 PLT 桩(外部):   188 个
+
+   被调用最多的外部函数 (Top 5):
+     3,436 次  __stack_chk_fail
+     1,078 次  memcpy
+       299 次  memset
+       255 次  _Unwind_Resume
+       234 次  strlen
+
+   外部调用占比: 1.3%  (外部 6,862 / 内部 510,808)
+
+**发现**: nvcc 的 51.7 万处调用中，仅有 **1.3%**\ 指向外部符号，其余
+98.7% 都是进程内部的自身调用；而外部调用的头几名全是
+``__stack_chk_fail``（栈保护检查）、``memcpy``、``strlen`` 这类 C
+运行库基础函数，没有任何 CUDA 或 LLVM 库符号。这与上面「依赖库极简」
+的观察互相印证：nvcc 是一个 **重内部逻辑、轻外部依赖**\ 的驱动程序——
+它的复杂度体现为 31.8 MiB 的自身代码，而不是外部库。
+
+同时，nvcc 的 ``.dynsym`` 里既没有 ``dlopen`` / ``dlsym``\ ，也没有
+``nvvm*`` 符号，说明它在运行期不加载任何外部模块。这一点与 cicc
+（``dlopen`` 可选插件 ``libTileIRCompiler_shared.so``，见 :doc:`03_cicc`）、
+nvlink（``dlopen`` ``libnvvm.so`` 做 LTO，见 :doc:`05_nvlink`）
+形成鲜明对照。
+
 --------------
 
 子工具链：完整的工具目录
