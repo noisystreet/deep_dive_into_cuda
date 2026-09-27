@@ -1,3 +1,6 @@
 sphinx>=5.0
 sphinx-rtd-theme>=1.0
 sphinxcontrib-mermaid>=0.9
+# 中文全文搜索依赖：language='zh_CN' 会启用 Sphinx 的 SearchChinese，
+# 它需要 jieba 做中文分词，否则中文内容不会被索引（只有英文标识符可搜）。
+jieba>=0.42

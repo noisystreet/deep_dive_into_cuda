@@ -87,7 +87,6 @@ mermaid_init_config = {
     },
 }
 
-templates_path = ['_templates']
 language = 'zh_CN'
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
