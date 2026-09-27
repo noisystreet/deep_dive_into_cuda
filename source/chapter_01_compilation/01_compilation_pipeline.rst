@@ -59,24 +59,28 @@ NVCC (NVIDIA CUDA Compiler) 将 ``.cu``
 
 这些变量定义了编译工具链的路径：
 
-+-----------------------+-----------------------+-----------------------+
-| 变量                  | 路径                  | 说明                  |
-+=======================+=======================+=======================+
-| ``TOP``               | ``/us                 | CUDA 安装根目录       |
-|                       | r/local/cuda/bin/..`` |                       |
-+-----------------------+-----------------------+-----------------------+
-| ``CICC_PATH``         | ``$TOP/nvvm/bin``     | CUDA device 编译器    |
-|                       |                       | (cicc) 位置           |
-+-----------------------+-----------------------+-----------------------+
-| `                     | ``                    | NVVM IR               |
-| `NVVMIR_LIBRARY_DIR`` | $TOP/nvvm/libdevice`` | 库（内置数学函数等）  |
-+-----------------------+-----------------------+-----------------------+
-| ``INCLUDES``          | ``$TOP/targets/x      | CUDA 头文件路径       |
-|                       | 86_64-linux/include`` |                       |
-+-----------------------+-----------------------+-----------------------+
-| ``LIBRARIES``         | ``$TOP/targe          | CUDA 库文件路径       |
-|                       | ts/x86_64-linux/lib`` |                       |
-+-----------------------+-----------------------+-----------------------+
+.. list-table::
+   :header-rows: 1
+   :widths: 24 38 38
+
+   * - 变量
+     - 路径
+     - 说明
+   * - ``TOP``
+     - ``/usr/local/cuda``
+     - CUDA 安装根目录（nvcc 打印为 ``/usr/local/cuda/bin/..``，归一化后即此路径）
+   * - ``CICC_PATH``
+     - ``$TOP/nvvm/bin``
+     - CUDA device 编译器 (cicc) 位置
+   * - ``NVVMIR_LIBRARY_DIR``
+     - ``$TOP/nvvm/libdevice``
+     - NVVM IR 库（内置数学函数等）
+   * - ``INCLUDES``
+     - ``$TOP/targets/x86_64-linux/include``
+     - CUDA 头文件路径
+   * - ``LIBRARIES``
+     - ``$TOP/targets/x86_64-linux/lib``
+     - CUDA 库文件路径
 
 关键预定义宏： - ``__CUDA_ARCH_LIST__=890`` — 目标 GPU 架构为 sm_89 -
 ``__CUDACC_VER_MAJOR__=13``, ``__CUDACC_VER_MINOR__=1``,
